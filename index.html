@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caast - Product prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#080910;font-family:'Poppins',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+  .page{max-width:560px;width:100%;display:flex;flex-direction:column;align-items:center}
+  .logo{font-size:42px;font-weight:600;color:#87C5EC;letter-spacing:-3.5px;line-height:1;margin-bottom:4px}
+  .logo-dot{color:#fff}
+  .tagline{font-size:13px;color:#935FE8;margin-bottom:8px}
+  .subtitle{font-size:11px;color:#fff;opacity:.35;margin-bottom:40px;text-align:center;line-height:1.5}
+  .cards{display:flex;flex-direction:column;gap:14px;width:100%}
+  .card{background:#0a0b14;border:1px solid #1e2140;border-radius:14px;padding:28px 24px;cursor:pointer;transition:border-color .3s,transform .2s;text-decoration:none;display:block;position:relative;overflow:hidden}
+  .card:hover{border-color:#935FE8;transform:translateY(-2px)}
+  .card:active{transform:translateY(0)}
+  .card-glow{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;opacity:0;transition:opacity .3s}
+  .card:hover .card-glow{opacity:.06}
+  .card-num{font-size:11px;color:#935FE8;margin-bottom:10px;letter-spacing:.5px}
+  .card-title{font-size:18px;font-weight:500;color:#fff;margin-bottom:6px;line-height:1.3}
+  .card-desc{font-size:11px;color:#fff;opacity:.45;line-height:1.6;margin-bottom:14px}
+  .card-screens{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .screen-pill{font-size:8px;color:#87C5EC;background:rgba(135,197,236,.08);border:1px solid rgba(135,197,236,.12);border-radius:4px;padding:3px 8px}
+  .card-cta{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#D321DA;transition:gap .2s}
+  .card:hover .card-cta{gap:10px}
+  .card-arrow{font-size:14px;transition:transform .2s}
+  .card:hover .card-arrow{transform:translateX(2px)}
+  .divider{display:flex;align-items:center;gap:12px;width:100%;margin:6px 0}
+  .divider-line{flex:1;height:1px;background:#1e2140}
+  .divider-text{font-size:9px;color:#fff;opacity:.2}
+  .footer{margin-top:40px;text-align:center}
+  .footer-text{font-size:9px;color:#fff;opacity:.2;line-height:1.6}
+  .footer-link{color:#935FE8;text-decoration:none;transition:color .2s}
+  .footer-link:hover{color:#87C5EC}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="logo">Caast<span class="logo-dot">.</span></div>
+  <div class="tagline">Product prototype</div>
+  <div class="subtitle">Interactive prototype for the AI-powered influence network platform.<br>Select a flow to explore.</div>
+
+  <div class="cards">
+    <a class="card" href="caast_prototype_full.html">
+      <div class="card-glow" style="background:#D321DA"></div>
+      <div class="card-num">Flow 1</div>
+      <div class="card-title">New customer onboarding</div>
+      <div class="card-desc">The complete activation journey - from first touch to dashboard. Registration, brand analysis, influence score, DOL fleet assignment, and content plan.</div>
+      <div class="card-screens">
+        <span class="screen-pill">Registration</span>
+        <span class="screen-pill">Brand ingestion</span>
+        <span class="screen-pill">Influence score</span>
+        <span class="screen-pill">Brand DNA</span>
+        <span class="screen-pill">Fleet ready</span>
+        <span class="screen-pill">Content plan</span>
+        <span class="screen-pill">Welcome</span>
+      </div>
+      <div class="card-cta">Launch onboarding <span class="card-arrow">&rarr;</span></div>
+    </a>
+
+    <div class="divider"><div class="divider-line"></div><div class="divider-text">then</div><div class="divider-line"></div></div>
+
+    <a class="card" href="caast_intelligence_radar.html">
+      <div class="card-glow" style="background:#935FE8"></div>
+      <div class="card-num">Flow 2</div>
+      <div class="card-title">Post-activation dashboard</div>
+      <div class="card-desc">The returning customer experience - login, influence radar with AI assistant, attribution dashboard, content plan, and account settings.</div>
+      <div class="card-screens">
+        <span class="screen-pill">Login + 2FA</span>
+        <span class="screen-pill">Influence radar</span>
+        <span class="screen-pill">AI chatbox</span>
+        <span class="screen-pill">Attribution dashboard</span>
+        <span class="screen-pill">Content plan</span>
+        <span class="screen-pill">Settings</span>
+      </div>
+      <div class="card-cta">Launch dashboard <span class="card-arrow">&rarr;</span></div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">caast.ai - Interactive prototype, not a production application.<br>Demo brand: GlossLab (glosslab.com)</div>
+  </div>
+</div>
+</body>
+</html>
