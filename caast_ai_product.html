@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caast - AI Product</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#F8F1F6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;position:relative;overflow-x:hidden}
+  body::before{content:'';position:fixed;top:-100px;right:-100px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(244,52,96,0.15) 0%,transparent 70%);pointer-events:none;z-index:0}
+  body::after{content:'';position:fixed;bottom:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(231,166,201,0.35) 0%,transparent 70%);pointer-events:none;z-index:0}
+  .root{font-family:'Poppins',sans-serif;background:transparent;border-radius:16px;display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;position:relative;z-index:1;max-width:700px;width:100%}
+  .screen{display:none;width:100%}
+  .screen.show{display:flex;flex-direction:column;align-items:center;animation:fu .3s ease}
+  @keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .top-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;width:100%;max-width:660px}
+  .logo{font-size:26px;font-weight:600;color:#F43460;letter-spacing:-2.5px;line-height:1}
+  .logo-dot{color:#6D6A65}
+  .top-mid{flex:1;text-align:center}
+  .pg-title{font-size:16px;font-weight:500;color:#81226B}
+  .pg-title em{font-style:normal;color:#F43460}
+  .pg-sub{font-size:10px;color:#6D6A65;margin-top:2px}
+  .brand-tag{font-size:10px;font-weight:500;color:#81226B;background:transparent;border:1px solid #D990B3;border-radius:20px;padding:5px 12px;white-space:nowrap}
+  .live-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;width:100%;max-width:660px}
+  .live-dot-w{position:relative;width:8px;height:8px;flex-shrink:0}
+  .live-d{width:8px;height:8px;border-radius:50%;background:#5DCAA5}
+  .live-ping{position:absolute;top:0;left:0;width:8px;height:8px;border-radius:50%;background:#5DCAA5;animation:ping 1.5s ease-out infinite}
+  @keyframes ping{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(2.2)}}
+  .live-label{font-size:10px;color:#5DCAA5}
+  .live-count{font-size:10px;color:#B8B6AF;margin-left:auto}
+
+
+  /* ══ Screen 1 - Influence Intelligence ══ */
+  .aui-section{width:100%;max-width:660px;margin-bottom:20px}
+  .aui-header{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;justify-content:center;flex-wrap:wrap}
+  .aui-label{font-size:16px;color:#F43460;letter-spacing:.5px;font-weight:500}
+  .aui-total{font-size:28px;font-weight:500;color:#81226B}
+  .aui-delta{font-size:16px;color:#5DCAA5;background:rgba(93,202,165,.1);padding:3px 10px;border-radius:4px;margin-left:4px;font-weight:500}
+  .aui-def{font-size:9px;color:#6D6A65;margin-bottom:14px;line-height:1.5;text-align:center}
+  .aui-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .aui-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:16px 14px;position:relative;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .aui-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .aui-card-bar{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px}
+  .aui-card-label{font-size:9px;color:#81226B;font-weight:500;margin-bottom:4px}
+  .aui-card-value{font-size:22px;font-weight:500;color:#6D6A65;margin-bottom:2px}
+  .aui-card-sub{font-size:8px;color:#B8B6AF}
+  .aui-card-pct{font-size:9px;position:absolute;top:14px;right:14px}
+  .aui-flow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px}
+  .aui-flow-step{font-size:13px;color:#6D6A65}
+  .aui-flow-arrow{font-size:14px;color:#F43460}
+  .aui-flow-rate{font-size:13px;font-weight:500}
+  .ii-divider{width:100%;max-width:660px;height:1px;background:#EEDCE4;margin:4px 0 12px}
+  .ck-section{width:100%;max-width:660px}
+  .ck-label{font-size:14px;color:#81226B;letter-spacing:.5px;margin-bottom:14px;font-weight:500}
+  .ck-card{display:flex;align-items:flex-start;gap:14px;background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .ck-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .ck-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ck-icon svg{width:22px;height:22px}
+  .ck-body{flex:1;min-width:0}
+  .ck-name{font-size:12px;font-weight:500;color:#81226B;margin-bottom:3px}
+  .ck-def{font-size:11px;color:#6D6A65;line-height:1.5}
+  .ck-right{text-align:right;flex-shrink:0;min-width:90px}
+  .ck-value{font-size:20px;font-weight:500;line-height:1;margin-bottom:2px}
+  .ck-vs{font-size:8px;color:#6D6A65;line-height:1.4}
+  .ck-delta{font-size:8px;display:inline-flex;align-items:center;padding:2px 6px;border-radius:3px;margin-top:3px}
+  .ck-up{color:#5DCAA5;background:rgba(93,202,165,.1)}
+
+
+  /* ══ Persistent nav bar ══ */
+  .global-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;width:100%;max-width:660px}
+  .global-mid{flex:1}
+  .top-nav{display:flex;gap:0;border-bottom:1px solid #EEDCE4;width:100%;max-width:660px;margin-bottom:12px}
+  .top-nav-item{flex:1;padding:10px 4px;text-align:center;font-size:11px;color:#B8B6AF;cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;font-family:'Poppins',sans-serif;position:relative}
+  .top-nav-item:hover{color:#6D6A65}
+  .top-nav-item.active{color:#81226B;font-weight:500;border-bottom-color:transparent;background:linear-gradient(180deg,transparent,rgba(244,52,96,.06))}
+  .top-nav-item.active::after{content:"";position:absolute;bottom:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#F43460,#EC274F);border-radius:2px}
+
+  .period-bar{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:14px;width:100%;max-width:660px}
+  .period-dates{font-size:9px;color:#F43460;margin-left:8px;font-weight:500}
+  .d-tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid #EEDCE4;width:100%;max-width:660px;position:relative}
+  .d-dtab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .25s;font-family:'Poppins',sans-serif;position:relative}
+  .d-dtab:hover .d-dtab-label{color:#6D6A65}
+  .d-dtab[data-active="true"]{background:linear-gradient(180deg,transparent,rgba(244,52,96,.06))}
+  .d-dtab[data-active="true"]::after{content:"";position:absolute;bottom:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#F43460,#EC274F);border-radius:2px}
+  .d-dtab-icon{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .d-dtab-label{font-size:11px;color:#B8B6AF;font-weight:500;transition:color .25s}
+  .d-dtab[data-active="true"] .d-dtab-label{color:#81226B}
+  .d-panel{display:none;width:100%;max-width:660px}
+  .d-panel.active{display:block;animation:fu .3s ease}
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:16px}
+  .kpi-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:12px 10px;text-align:center;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .kpi-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .kpi-label{font-size:8px;color:#81226B;font-weight:500;letter-spacing:.3px;margin-bottom:6px;line-height:1.3;min-height:22px;display:flex;align-items:center;justify-content:center}
+  .kpi-value{font-size:18px;font-weight:500;line-height:1;margin-bottom:4px}
+  .kv-count{color:#6D6A65}.kv-pct{color:#81226B}.kv-money{color:#EA7A3B}
+  .kpi-delta{font-size:9px;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px}
+  .kpi-up{color:#5DCAA5;background:rgba(93,202,165,.1)}
+  .kpi-down{color:#E24B4A;background:rgba(226,75,74,.1)}
+  .kpi-flat{color:#4a5070;background:rgba(74,80,112,.1)}
+  .kpi-sub{font-size:8px;color:#F43460;font-weight:500;margin-top:4px}
+  .chart-section{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:14px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .chart-section:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .chart-title{font-size:11px;color:#81226B;font-weight:500}
+  .chart-legend{display:flex;gap:12px}
+  .chart-leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:#6D6A65}
+  .chart-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+  .insight-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;width:100%;max-width:660px}
+  .insight-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:14px 16px;display:flex;gap:12px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s,box-shadow .3s ease,border-color .3s ease}
+  .insight-card:hover{box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .insight-card.show{opacity:1;transform:translateY(0)}
+  .ic-left{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:52px}
+  .ic-badge{font-size:7px;font-weight:500;padding:3px 7px;border-radius:4px;white-space:nowrap;text-align:center;width:100%}
+  .ic-badge-trending{background:rgba(93,202,165,.12);color:#5DCAA5}
+  .ic-badge-competitive{background:rgba(234,122,59,.15);color:#EA7A3B}
+  .ic-badge-product{background:rgba(236,39,79,.12);color:#EC274F}
+  .ic-badge-inventory{background:rgba(212,166,86,.12);color:#D4A656}
+  .ic-badge-discount{background:rgba(244,52,96,.1);color:#F43460}
+  .ic-badge-performer{background:rgba(129,34,107,.1);color:#81226B}
+  .ic-time{font-size:8px;color:#B8B6AF}
+  .ic-body{flex:1}.ic-text{font-size:12px;color:#81226B;line-height:1.5;margin-bottom:6px}
+  .ic-arrow{color:#F43460;font-size:12px;margin:0 2px}
+  .ic-action{display:flex;align-items:center;gap:6px}
+  .ic-dol-av{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:500;color:#fff;flex-shrink:0}
+  .ic-dol-text{font-size:9px;color:#6D6A65}
+  .ic-status{font-size:8px;color:#5DCAA5;background:rgba(93,202,165,.1);padding:2px 6px;border-radius:3px;margin-left:auto}
+
+  .cp-tab-bar{display:flex;gap:0;margin-bottom:14px;border-bottom:1px solid #EEDCE4;width:100%;max-width:660px;position:relative}
+  .cp-dtab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .25s;font-family:'Poppins',sans-serif;position:relative}
+  .cp-dtab:hover .tab-name{color:#6D6A65}
+  .cp-dtab[data-active="true"]{background:linear-gradient(180deg,transparent,rgba(244,52,96,.06))}
+  .cp-dtab[data-active="true"]::after{content:"";position:absolute;bottom:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#F43460,#EC274F);border-radius:2px}
+  .tab-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;color:#fff;flex-shrink:0}
+  .tab-name{font-size:10px;color:#B8B6AF;font-weight:500;transition:color .25s;white-space:nowrap}
+  .cp-dtab[data-active="true"] .tab-name{color:#81226B}
+  .cp-panel{display:none;width:100%;max-width:660px}
+  .cp-panel.active{display:block;animation:fu .3s ease}
+  .posts-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+  .sp{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .sp:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(244,52,96,.22);border-color:#F43460}
+  .sp-head{display:flex;align-items:center;gap:6px;padding:8px 10px 6px}
+  .sp-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:500;color:#fff;flex-shrink:0}
+  .sp-user{font-size:9px;font-weight:500;color:#81226B;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sp-badges{display:flex;gap:4px;flex-shrink:0}
+  .sp-badge{font-size:7px;color:#6D6A65;background:rgba(129,34,107,0.08);border-radius:3px;padding:2px 5px;white-space:nowrap;font-weight:500}
+  .sp-visual{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden}
+  .sp-trigger{padding:4px 10px;display:flex;align-items:center;gap:4px}
+  .sp-trigger-badge{font-size:6px;padding:2px 5px;border-radius:3px;white-space:nowrap}
+  .sp-trigger-text{font-size:8px;color:#6D6A65}
+  .sp-cap{padding:8px 10px}.sp-cap-user{font-size:9px;font-weight:500;color:#81226B}
+  .sp-cap-text{font-size:9px;color:#6D6A65;line-height:1.45;margin-top:2px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .sp-tags{font-size:8px;color:#F43460;font-weight:500;margin-top:4px}
+  .sp-eng{display:flex;gap:10px;padding:4px 10px 8px;font-size:8px;color:#B8B6AF}
+  @keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .af1{animation:float1 3s ease-in-out infinite}.af2{animation:float2 2.5s ease-in-out infinite .5s}
+
+
+  /* ══ Radar Screen ══ */
+  .ir-status{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:16px}
+  .ir-status-dot{width:6px;height:6px;border-radius:50%;background:#5DCAA5;animation:irpulse 1.5s ease-out infinite}
+  @keyframes irpulse{0%{opacity:1;box-shadow:0 0 0 0 rgba(93,202,165,.4)}70%{box-shadow:0 0 0 6px rgba(93,202,165,0)}100%{box-shadow:0 0 0 0 rgba(93,202,165,0)}}
+  .ir-status-text{font-size:11px;color:#5DCAA5}
+  .ir-status-time{font-size:9px;color:#6D6A65}
+  .radar-zone{position:relative;width:340px;height:340px;margin:0 auto 16px;background:radial-gradient(circle at center,#161823 0%,#2d3142 55%,#4a5168 100%);border-radius:50%;padding:20px;box-shadow:0 12px 40px -10px rgba(40,42,60,.5),inset 0 0 60px rgba(244,52,96,.04)}
+  .radar-svg-wrap{position:relative;width:100%;height:100%}
+  .radar-svg{position:absolute;top:20px;left:20px;width:300px;height:300px}
+  .radar-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+  .rc-num{font-size:34px;font-weight:600;color:#fff;line-height:1}
+  .rc-label{font-size:9px;color:#EC274F;margin-top:2px;font-weight:500}
+  .rc-delta{font-size:11px;color:#5DCAA5;margin-top:2px;font-weight:500}
+  .float-kpi{position:absolute;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:6px 10px;min-width:90px;text-align:center;z-index:2;box-shadow:0 8px 20px -8px rgba(244,52,96,.25);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .float-kpi:hover{transform:translateY(-1px);box-shadow:0 12px 28px -8px rgba(244,52,96,.35);border-color:#F43460}
+  .fk-val{font-size:15px;font-weight:500;line-height:1.1}
+  .fk-label{font-size:9px;color:#6D6A65;margin-top:2px;line-height:1.2}
+  .fk-delta{font-size:9px;margin-top:1px}
+  .fk-up{color:#5DCAA5}
+  .ai-box{width:100%;max-width:460px;margin:0 auto 14px}
+  .ai-header{display:flex;align-items:center;gap:4px;margin-bottom:8px;justify-content:center}
+  .ai-sparkle{font-size:14px;line-height:1}
+  .ai-title{font-size:11px;font-weight:500;color:#F43460}
+  .ai-input-wrap{position:relative;width:100%}
+  .ai-input{width:100%;background:#fff;border:1px solid #F43460;border-radius:10px;padding:12px 44px 12px 16px;color:#6D6A65;font-size:12px;font-family:'Poppins',sans-serif;outline:none;transition:box-shadow .2s}
+  .ai-input:focus{box-shadow:0 0 0 2px rgba(244,52,96,.15)}
+  .ai-ghost{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(244,52,96,.5);pointer-events:none;transition:opacity .4s ease;font-family:'Poppins',sans-serif}
+  .ai-ghost.hide{opacity:0}
+  .ai-send{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:linear-gradient(90deg,#EA7A3B 0%,#F43460 50%,#EC274F 100%);border:none;border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s ease,box-shadow .3s ease;box-shadow:0 4px 12px -4px rgba(244,52,96,.5)}
+  .ai-send:hover{background:linear-gradient(90deg,#EC274F 0%,#F43460 50%,#EA7A3B 100%);box-shadow:0 6px 16px -4px rgba(244,52,96,.65)}
+  .ai-send svg{width:14px;height:14px}
+  .hl-section{width:100%;max-width:640px}
+  .hl-tabs{display:flex;gap:0;border-bottom:1px solid #EEDCE4;margin-bottom:12px;position:relative}
+  .hl-tab{flex:1;padding:8px 4px;text-align:center;font-size:10px;color:#B8B6AF;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;font-family:'Poppins',sans-serif;background:transparent;border-top:none;border-left:none;border-right:none;position:relative}
+  .hl-tab:hover{color:#6D6A65}
+  .hl-tab.active{color:#81226B;background:linear-gradient(180deg,transparent,rgba(244,52,96,.06))}
+  .hl-tab.active::after{content:"";position:absolute;bottom:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#F43460,#EC274F);border-radius:2px}
+  .hl-panel{display:none}
+  .hl-panel.active{display:block;animation:fu .3s ease}
+  .hl-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:0;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .hl-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .hl-badge-col{width:80px;flex-shrink:0;display:flex;align-items:flex-start;padding-top:1px}
+  .hl-badge{font-size:9px;font-weight:500;padding:4px 0;width:72px;text-align:center;border-radius:6px;white-space:nowrap}
+  .hl-body{flex:1;min-width:0;padding-left:10px}
+  .hl-name{font-size:11px;font-weight:500;color:#81226B;margin-bottom:2px}
+  .hl-desc{font-size:9px;color:#6D6A65;line-height:1.4}
+  .hl-right{text-align:right;flex-shrink:0;padding-left:10px;min-width:60px}
+  .hl-rval{font-size:14px;font-weight:500}
+  .hl-rsub{font-size:8px;color:#6D6A65;margin-top:1px}
+  .hl-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .hl-icon svg{width:16px;height:16px}
+  .hl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hl-mini{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:12px;text-align:center;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .hl-mini:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .hl-mini-val{font-size:18px;font-weight:500;margin-bottom:2px}
+  .hl-mini-label{font-size:8px;color:#81226B;font-weight:500;line-height:1.3}
+  .hl-mini-delta{font-size:8px;color:#5DCAA5;margin-top:2px}
+  .hl-period{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:12px}
+  .hl-pb{display:inline-block;padding:3px 8px;font-size:9px;font-weight:500;font-family:'Poppins',sans-serif;border-radius:4px;cursor:pointer;transition:all .2s}
+  .hl-pb-active{border:1px solid #F43460;color:#fff;background:#F43460}
+  .hl-pb-inactive{border:1px solid #EEDCE4;color:#B8B6AF;background:transparent}
+  .hl-pb-inactive:hover{border-color:#F43460;color:#F43460}
+  .hl-card-std{display:flex;align-items:flex-start;gap:12px;background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:10px 12px;margin-bottom:6px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .hl-card-std:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+
+  .settings-wrap{width:100%;max-width:460px;display:flex;flex-direction:column;gap:14px}
+  .section{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:18px 16px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .section:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .sec-lbl{font-size:10px;color:#81226B;font-weight:500;letter-spacing:.5px;margin-bottom:14px}
+  .field-row{display:flex;gap:10px;margin-bottom:10px}.field-row:last-child{margin-bottom:0}
+  .field{flex:1;display:flex;flex-direction:column}
+  .f-label{font-size:9px;color:#81226B;font-weight:500;margin-bottom:4px}
+  .f-input{width:100%;background:#fff;border:1px solid #EEDCE4;border-radius:8px;padding:10px 12px;color:#6D6A65;font-size:12px;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+  .f-input::placeholder{color:#B8B6AF}.f-input:focus{border-color:#F43460}.f-input.prefilled{color:#81226B;border-color:#EEDCE4}
+  .f-link{font-size:9px;color:#F43460;font-weight:500;cursor:pointer;margin-top:6px;display:inline-block;transition:color .2s}.f-link:hover{color:#EC274F}
+  .plan-row{display:flex;gap:10px;margin-bottom:12px}
+  .plan-current{flex:1;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:14px}
+  .plan-info{flex:1}.plan-name{font-size:14px;font-weight:500;color:#81226B;margin-bottom:2px}.plan-price{font-size:11px;color:#F43460;font-weight:500}
+  .plan-active{font-size:8px;color:#5DCAA5;background:rgba(93,202,165,.1);padding:3px 8px;border-radius:4px;white-space:nowrap}
+  .plan-change-wrap{display:flex;align-items:center}
+  .plan-change{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid #EEDCE4;border-radius:10px;padding:14px 20px;color:#81226B;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap}
+  .plan-change:hover{border-color:#F43460;color:#F43460}
+  .plan-details{display:flex;gap:16px;margin-bottom:12px}
+  .pd-item{flex:1}.pd-label{font-size:8px;color:#81226B;font-weight:500;margin-bottom:3px}.pd-value{font-size:11px;color:#6D6A65}
+  .shopify-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:12px 14px}
+  .shopify-icon-sm{width:28px;height:28px;border-radius:6px;background:#F4E9EF;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .shopify-icon-sm svg{width:16px;height:16px}
+  .shopify-status{flex:1}.shopify-status-title{font-size:11px;color:#81226B;font-weight:500}.shopify-status-sub{font-size:9px;color:#5DCAA5;margin-top:1px;font-weight:500}
+
+  /* ── Settings: connect platforms grid (mirror of Screen 6) ── */
+  .set-platforms-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .set-mini{background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,background .25s ease;position:relative;min-height:44px}
+  .set-mini:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .set-mini-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}
+  .set-mini-icon svg{width:16px;height:16px}
+  .set-mini-label{font-size:9px;font-weight:500;color:#81226B;text-align:center;line-height:1.2}
+  .set-mini-master{background:linear-gradient(135deg,rgba(234,122,59,.1) 0%,rgba(244,52,96,.1) 50%,rgba(236,39,79,.1) 100%);border-color:rgba(244,52,96,.3)}
+  .set-mini-master:hover{border-color:#F43460}
+  .set-mini-master .set-mini-label{font-weight:600}
+  .set-mini.connected{border-color:#5DCAA5;background:#fff}
+  .set-platforms-status{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;font-size:9px}
+  .set-platforms-status-dot{width:5px;height:5px;border-radius:50%;background:#EA7A3B}
+  .set-platforms-status-dot.complete{background:#5DCAA5}
+  .set-platforms-status-text{color:#EA7A3B;font-weight:500}
+  .set-platforms-status-text.complete{color:#5DCAA5}
+  .set-platforms-status-sep{color:#B8B6AF}
+  .set-platforms-status-sub{color:#B8B6AF}
+  .shopify-connected-dot{width:8px;height:8px;border-radius:50%;background:#5DCAA5;flex-shrink:0}
+  .billing-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .card-icon{width:32px;height:20px;background:#F4E9EF;border:1px solid #EEDCE4;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .card-info{flex:1}.card-label{font-size:11px;color:#81226B;font-weight:500}.card-exp{font-size:9px;color:#B8B6AF}
+  .billing-links{display:flex;gap:16px}
+
+
+  /* ══ Login Screen ══ */
+  .login-screen{display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 0 0}
+  .login-screen.hidden{display:none}
+  .login-logo{font-size:36px;font-weight:600;color:#F43460;letter-spacing:-3px;margin-bottom:6px;line-height:1}
+  .login-logo-dot{color:#6D6A65}
+  .login-tagline{font-size:13px;color:#EC274F;margin-bottom:36px}
+  .login-step{display:none;width:100%;max-width:380px;flex-direction:column;align-items:center}
+  .login-step.show{display:flex;animation:fu .3s ease}
+  .login-headline{font-size:20px;font-weight:500;color:#81226B;text-align:center;margin-bottom:6px;line-height:1.3}
+  .login-headline em{font-style:normal;color:#F43460}
+  .login-subline{font-size:12px;color:#6D6A65;text-align:center;margin-bottom:28px;line-height:1.5}
+  .login-form-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:16px;padding:24px 20px;width:100%;margin-bottom:20px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  .login-form-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(244,52,96,.22);border-color:#F43460}
+  .login-field{margin-bottom:14px}
+  .login-field:last-child{margin-bottom:0}
+  .lf-label{font-size:10px;font-weight:500;color:#81226B;margin-bottom:5px}
+  .lf-input{width:100%;background:#fff;border:1px solid #EEDCE4;border-radius:8px;padding:11px 14px;color:#6D6A65;font-size:13px;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+  .lf-input::placeholder{color:#B8B6AF}
+  .lf-input:focus{border-color:#F43460}
+  .lf-input.err{border-color:#E24B4A}
+  .lf-error{font-size:8px;color:#E24B4A;margin-top:4px;display:none}
+  .lf-pw-wrap{position:relative}
+  .lf-pw-wrap .lf-input{padding-right:36px}
+  .lf-pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center}
+  .lf-pw-toggle svg{width:18px;height:18px}
+  .lf-row-between{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .lf-remember{display:flex;align-items:center;gap:6px;font-size:9px;color:#6D6A65;cursor:pointer}
+  .lf-remember input{accent-color:#F43460;width:12px;height:12px}
+  .lf-forgot{font-size:9px;color:#F43460;font-weight:500;cursor:pointer;transition:color .2s}
+  .lf-forgot:hover{color:#EC274F}
+  .btn-login{width:100%;background:linear-gradient(90deg,#EA7A3B 0%,#F43460 50%,#EC274F 100%);border:none;border-radius:12px;padding:14px;color:#fff;font-size:14px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .25s ease,transform .2s ease,box-shadow .3s ease;margin-bottom:16px;box-shadow:0 6px 22px -4px rgba(244,52,96,.5)}
+  .btn-login:hover:not(:disabled){background:linear-gradient(90deg,#EC274F 0%,#F43460 50%,#EA7A3B 100%);transform:translateY(-1px);box-shadow:0 12px 28px -6px rgba(244,52,96,.65)}
+  .btn-login:active:not(:disabled){transform:translateY(0)}
+  .btn-login:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+  .login-divider{display:flex;align-items:center;gap:12px;width:100%;max-width:380px;margin-bottom:16px}
+  .login-divider-line{flex:1;height:1px;background:#EEDCE4}
+  .login-divider-text{font-size:9px;color:#B8B6AF}
+  .login-signup-link{font-size:11px;color:#F43460;font-weight:500;text-align:center;cursor:pointer;transition:color .2s}
+  .login-signup-link:hover{color:#EC274F}
+  .login-method-title{font-size:11px;color:#6D6A65;text-align:center;margin-bottom:12px}
+  .login-method-cards{display:flex;gap:10px;width:100%;margin-bottom:20px}
+  .login-method-card{flex:1;background:#F4E9EF;border:1px solid #EEDCE4;border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease,background .3s ease}
+  .login-method-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(244,52,96,.18);border-color:#F43460}
+  .login-method-card.selected{border-color:#F43460;background:rgba(244,52,96,.06)}
+  .login-method-icon{margin:0 auto 8px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center}
+  .login-method-icon svg{width:18px;height:18px}
+  .login-method-name{font-size:12px;font-weight:500;color:#81226B;margin-bottom:2px}
+  .login-method-detail{font-size:8px;color:#B8B6AF}
+  .btn-send-login-code{width:100%;background:linear-gradient(90deg,#EA7A3B 0%,#F43460 50%,#EC274F 100%);border:none;border-radius:12px;padding:14px;color:#fff;font-size:14px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .25s ease,transform .2s ease,box-shadow .3s ease;margin-bottom:12px;box-shadow:0 6px 22px -4px rgba(244,52,96,.5)}
+  .btn-send-login-code:hover{background:linear-gradient(90deg,#EC274F 0%,#F43460 50%,#EA7A3B 100%);transform:translateY(-1px);box-shadow:0 12px 28px -6px rgba(244,52,96,.65)}
+  .btn-send-login-code:active{transform:translateY(0)}
+  .login-sent-to{font-size:11px;color:#6D6A65;text-align:center;margin-bottom:6px}
+  .login-sent-val{color:#81226B;font-weight:500}
+  .login-code-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+  .login-code-digit{width:44px;height:52px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;text-align:center;font-size:22px;font-weight:500;color:#81226B;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s;caret-color:#F43460}
+  .login-code-digit:focus{border-color:#F43460}
+  .login-code-digit.filled{border-color:#5DCAA5}
+  .login-resend-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+  .login-resend-link{font-size:10px;color:#F43460;font-weight:500;cursor:pointer;transition:color .2s}
+  .login-resend-link:hover{color:#EC274F}
+  .login-resend-timer{font-size:10px;color:#B8B6AF}
+  .login-back{font-size:10px;color:#6D6A65;cursor:pointer;text-align:center;transition:color .2s}
+  .login-back:hover{color:#81226B}
+  .login-success-ring{width:56px;height:56px;border-radius:50%;background:rgba(93,202,165,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .login-success-ring svg{width:28px;height:28px}
+  .login-success-text{font-size:14px;color:#81226B;font-weight:500;text-align:center;margin-bottom:4px}
+  .login-success-sub{font-size:11px;color:#5DCAA5;text-align:center}
+  .dashboard-wrap{display:none}
+  .dashboard-wrap.show{display:contents}
+
+  .nav-cta{display:block;width:100%;max-width:660px;background:linear-gradient(90deg,#EA7A3B 0%,#F43460 50%,#EC274F 100%);border:none;border-radius:12px;padding:14px;color:#fff;font-size:14px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;text-align:center;transition:background .25s ease,transform .2s ease,box-shadow .3s ease;margin-top:4px;box-shadow:0 6px 22px -4px rgba(244,52,96,.5)}
+  .nav-cta:hover{background:linear-gradient(90deg,#EC274F 0%,#F43460 50%,#EA7A3B 100%);transform:translateY(-1px);box-shadow:0 12px 28px -6px rgba(244,52,96,.65)}
+  .nav-back{display:block;text-align:center;color:#B8B6AF;font-size:12px;font-family:'Poppins',sans-serif;cursor:pointer;margin-top:10px;width:100%;max-width:660px;transition:color .2s}
+  .nav-back:hover{color:#81226B}
+  @media(max-width:640px){.posts-row{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="root">
+
+
+  <!-- ═══ LOGIN SCREEN ═══ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-logo">Caast<span class="login-logo-dot">.</span></div>
+    <div class="login-tagline">influence network</div>
+    <div class="login-step show" id="loginStep1">
+      <div class="login-headline">Welcome back</div>
+      <div class="login-subline">Log in to your influence dashboard.</div>
+      <div class="login-form-card">
+        <div class="login-field"><div class="lf-label">Email</div><input class="lf-input" type="email" id="loginEmail" placeholder="you@yourcompany.com" oninput="validateLogin()"/><div class="lf-error" id="loginEmailErr">Account not found</div></div>
+        <div class="login-field"><div class="lf-label">Password</div><div class="lf-pw-wrap"><input class="lf-input" type="password" id="loginPw" placeholder="Enter your password" oninput="validateLogin()" onkeydown="if(event.key==='Enter')loginSubmit()"/><button class="lf-pw-toggle" onclick="toggleLoginPw()"><svg viewBox="0 0 24 24" fill="none" stroke="#B8B6AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="loginEyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="lf-error" id="loginPwErr">Incorrect password</div><div class="lf-row-between"><label class="lf-remember"><input type="checkbox" checked/> Remember me</label><span class="lf-forgot">Forgot password?</span></div></div>
+      </div>
+      <button class="btn-login" id="loginBtn" disabled onclick="loginSubmit()">Log in</button>
+      <div class="login-divider"><div class="login-divider-line"></div><div class="login-divider-text">or</div><div class="login-divider-line"></div></div>
+      <div class="login-signup-link">Don't have an account? Start your free activation</div>
+    </div>
+    <div class="login-step" id="loginStep2">
+      <div class="login-headline">Two-step <em>verification</em></div>
+      <div class="login-subline">Choose how you'd like to receive your verification code.</div>
+      <div class="login-method-title">Send code via</div>
+      <div class="login-method-cards">
+        <div class="login-method-card selected" id="loginMethodEmail" onclick="selectLoginMethod('email')"><div class="login-method-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#F43460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg></div><div class="login-method-name">Email</div><div class="login-method-detail" id="loginMethodEmailDetail">r***l@glosslab.com</div></div>
+        <div class="login-method-card" id="loginMethodPhone" onclick="selectLoginMethod('phone')"><div class="login-method-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#F43460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="login-method-name">Phone</div><div class="login-method-detail">***-***-0187</div></div>
+      </div>
+      <button class="btn-send-login-code" onclick="sendLoginCode()">Send verification code</button>
+      <div class="login-back" onclick="showLoginStep(1)">&#8592; Back to login</div>
+    </div>
+    <div class="login-step" id="loginStep3">
+      <div class="login-headline">Enter your <em>code</em></div>
+      <div class="login-subline">We sent a 6-digit verification code.</div>
+      <div class="login-sent-to">Sent to <span class="login-sent-val" id="loginSentTo">r***l@glosslab.com</span></div>
+      <div style="height:12px"></div>
+      <div class="login-code-row"><input class="login-code-digit" type="text" maxlength="1" id="lc0" oninput="loginDigit(0)" onkeydown="loginDigitKey(event,0)"/><input class="login-code-digit" type="text" maxlength="1" id="lc1" oninput="loginDigit(1)" onkeydown="loginDigitKey(event,1)"/><input class="login-code-digit" type="text" maxlength="1" id="lc2" oninput="loginDigit(2)" onkeydown="loginDigitKey(event,2)"/><input class="login-code-digit" type="text" maxlength="1" id="lc3" oninput="loginDigit(3)" onkeydown="loginDigitKey(event,3)"/><input class="login-code-digit" type="text" maxlength="1" id="lc4" oninput="loginDigit(4)" onkeydown="loginDigitKey(event,4)"/><input class="login-code-digit" type="text" maxlength="1" id="lc5" oninput="loginDigit(5)" onkeydown="loginDigitKey(event,5)"/></div>
+      <div class="login-resend-row"><span class="login-resend-link" id="loginResendLink" style="pointer-events:none;opacity:.4">Resend code</span><span class="login-resend-timer" id="loginResendTimer">0:30</span></div>
+      <div class="login-back" onclick="loginGoBack()">&#8592; Try a different method</div>
+    </div>
+    <div class="login-step" id="loginStep4">
+      <div class="login-success-ring"><svg viewBox="0 0 24 24" fill="none" stroke="#5DCAA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="login-success-text">Verified - loading your dashboard...</div>
+      <div class="login-success-sub">Welcome back, Rachel</div>
+    </div>
+  </div>
+
+  <div class="dashboard-wrap" id="dashboardWrap">
+  <div class="top-nav" id="topNav">
+    <div class="top-nav-item active" onclick="navTo('screen1',0)">Influence</div>
+    <div class="top-nav-item" onclick="navTo('screen2',1)">Dashboard</div>
+    <div class="top-nav-item" onclick="navTo('screen3',2)">Content plan</div>
+    <div class="top-nav-item" onclick="navTo('screen4',3)">Settings</div>
+  </div>
+
+  <!-- ═══ SCREEN 1 - Influence Radar ═══ -->
+  <div class="screen show" id="screen1">
+    <div class="top-row"><div class="logo">Caast<span class="logo-dot">.</span></div><div class="top-mid"><div class="pg-title">Influence <em>intelligence</em></div></div><div class="brand-tag">GlossLab</div></div>
+    <div class="ir-status"><div class="ir-status-dot"></div><div class="ir-status-text">Influence network active</div><div class="ir-status-time">Live! vs. last 7D</div></div>
+    <div class="radar-zone">
+      <svg class="radar-svg" viewBox="0 0 300 300">
+        <defs>
+          <filter id="blipGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(248,241,246,.55)" stroke-width=".7"/>
+        <circle cx="150" cy="150" r="97" fill="none" stroke="rgba(248,241,246,.45)" stroke-width=".7"/>
+        <circle cx="150" cy="150" r="65" fill="none" stroke="rgba(248,241,246,.38)" stroke-width=".7"/>
+        <circle cx="150" cy="150" r="32" fill="none" stroke="rgba(248,241,246,.32)" stroke-width=".7"/>
+        <line x1="150" y1="20" x2="150" y2="280" stroke="rgba(248,241,246,.4)" stroke-width=".5"/>
+        <line x1="20" y1="150" x2="280" y2="150" stroke="rgba(248,241,246,.4)" stroke-width=".5"/>
+        <line x1="58" y1="58" x2="242" y2="242" stroke="rgba(248,241,246,.28)" stroke-width=".3"/>
+        <line x1="242" y1="58" x2="58" y2="242" stroke="rgba(248,241,246,.28)" stroke-width=".3"/>
+        <g id="radarSweep" style="transform-origin:150px 150px">
+          <line x1="150" y1="150" x2="150" y2="22" stroke="#F43460" stroke-width="1.8" opacity=".85"/>
+          <path d="M150,150 L150,22 A128,128 0 0,0 59,62 Z" fill="rgba(244,52,96,.12)"/>
+        </g>
+        <polygon id="radarShape" fill="rgba(244,52,96,.05)" stroke="#F43460" stroke-width="1.8" points="150,52 228,93 252,163 215,235 112,243 57,188 47,112 89,66"/>
+        <circle cx="150" cy="52" r="4.8" fill="#EA7A3B" opacity=".9"/>
+        <circle cx="228" cy="93" r="3.6" fill="#F43460" opacity=".9"/>
+        <circle cx="252" cy="163" r="6" fill="#F43460" opacity=".9"/>
+        <circle cx="215" cy="235" r="3.6" fill="#81226B" opacity=".9"/>
+        <circle cx="112" cy="243" r="4.8" fill="#EA7A3B" opacity=".9"/>
+        <circle cx="57" cy="188" r="3.6" fill="#5DCAA5" opacity=".9"/>
+        <circle cx="47" cy="112" r="4.8" fill="#F43460" opacity=".9"/>
+        <circle cx="89" cy="66" r="3.6" fill="#F43460" opacity=".9"/>
+        <circle id="blip1" cx="0" cy="0" r="5.6" fill="#5DCAA5" opacity="0" filter="url(#blipGlow)"/>
+        <circle id="blip2" cx="0" cy="0" r="5" fill="#F43460" opacity="0" filter="url(#blipGlow)"/>
+        <circle id="blip3" cx="0" cy="0" r="4.4" fill="#EA7A3B" opacity="0" filter="url(#blipGlow)"/>
+      </svg>
+      <div class="radar-center"><div class="rc-num">18,240</div><div class="rc-label">Audience under influence</div><div class="rc-delta">+22% vs. last week</div></div>
+      <div class="float-kpi" style="top:-4px;left:50%;transform:translateX(-50%)"><div class="fk-val" style="color:#F43460">127K</div><div class="fk-label">Reached audience</div><div class="fk-delta fk-up">+18%</div></div>
+      <div class="float-kpi" style="top:50%;right:-14px;transform:translateY(-50%)"><div class="fk-val" style="color:#EA7A3B">$8,420</div><div class="fk-label">Equivalent ad spend</div><div class="fk-delta fk-up">36x return</div></div>
+      <div class="float-kpi" style="bottom:-4px;left:50%;transform:translateX(-50%)"><div class="fk-val" style="color:#EC274F">63</div><div class="fk-label">Content volume</div><div class="fk-delta fk-up">3 DOLs active</div></div>
+      <div class="float-kpi" style="top:50%;left:-14px;transform:translateY(-50%)"><div class="fk-val" style="color:#81226B">$2,520</div><div class="fk-label">Equivalent labor saved</div><div class="fk-delta fk-up">63hrs of work</div></div>
+    </div>
+    <div class="ai-box">
+      <div class="ai-header"><span class="ai-sparkle">&#10024;</span><div class="ai-title">Ask me anything</div></div>
+      <div class="ai-input-wrap">
+        <input class="ai-input" type="text" id="aiInput" oninput="aiTyping()" onfocus="aiTyping()" onblur="aiBlur()"/>
+        <div class="ai-ghost" id="aiGhost">Why did engagement spike on Tuesday?</div>
+        <button class="ai-send" onclick="aiSend()"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+    <div class="hl-section">
+      <div class="hl-tabs">
+        <button class="hl-tab active" onclick="showHL(0)">This week's highlights</button>
+        <button class="hl-tab" onclick="showHL(1)">Business impact</button>
+        <button class="hl-tab" onclick="showHL(2)">Fleet performance</button>
+        <button class="hl-tab" onclick="showHL(3)">Competitive intel</button>
+      </div>
+      <div class="hl-panel active" id="hlp0">
+        <div class="hl-card"><div class="hl-badge-col"><div class="hl-badge" style="color:#5DCAA5;background:rgba(93,202,165,.12)">Trending</div></div><div class="hl-body"><div class="hl-name">#cleangelnails trending +340% on TikTok</div><div class="hl-desc">Elara and Mia pivoted content to capture the wave. 3 posts live, 2 more scheduled.</div></div><div class="hl-right"><div class="hl-rval" style="color:#5DCAA5">3.2K</div><div class="hl-rsub">Engagements</div></div></div>
+        <div class="hl-card"><div class="hl-badge-col"><div class="hl-badge" style="color:#EA7A3B;background:rgba(234,122,59,.15)">Competitive</div></div><div class="hl-body"><div class="hl-name">Olive & June launched $42 gel kit</div><div class="hl-desc">Elara's comparison carousel is live. Highlighting GlossLab's 12 clean ingredients vs. 7.</div></div><div class="hl-right"><div class="hl-rval" style="color:#EA7A3B">2.2K</div><div class="hl-rsub">Views in 5h</div></div></div>
+        <div class="hl-card"><div class="hl-badge-col"><div class="hl-badge" style="color:#D4A656;background:rgba(212,166,86,.12)">Inventory</div></div><div class="hl-body"><div class="hl-name">Cuticle Oil low stock detected (23 units)</div><div class="hl-desc">Promotional content auto-paused across all DOLs until restocked.</div></div><div class="hl-right"><div class="hl-rval" style="color:#D4A656">Paused</div><div class="hl-rsub">Auto-action</div></div></div>
+        <div class="hl-card"><div class="hl-badge-col"><div class="hl-badge" style="color:#F43460;background:rgba(244,52,96,.1)">Opportunity</div></div><div class="hl-body"><div class="hl-name">Spring nail season starting</div><div class="hl-desc">Recommending 15% promo code SPRING15 for fleet to distribute across all platforms.</div></div><div class="hl-right"><div class="hl-rval" style="color:#F43460">15%</div><div class="hl-rsub">Promo</div></div></div>
+      </div>
+      <div class="hl-panel" id="hlp1">
+        <div class="hl-grid"><div class="hl-mini"><div class="hl-mini-val" style="color:#81226B">$8,420</div><div class="hl-mini-label">Equivalent ad spend saved</div><div class="hl-mini-delta">You paid $250/week</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#F43460">$4,950</div><div class="hl-mini-label">Attributed revenue</div><div class="hl-mini-delta">130 orders from influenced customers</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#5DCAA5">53x</div><div class="hl-mini-label">Return on investment</div><div class="hl-mini-delta">$250 out, $13,370 equivalent in</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#F43460">$3.50</div><div class="hl-mini-label">CPM</div><div class="hl-mini-delta">-58% vs. avg. IG $8.50</div></div></div>
+        <div class="hl-card-std" style="margin-top:8px"><div class="hl-icon" style="background:rgba(244,52,96,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#F43460" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="hl-body"><div class="hl-name">SPRING15 promo driving 42% of this week's conversions</div><div class="hl-desc">All 3 DOLs actively distributing. Recommend extending through April based on conversion velocity.</div></div><div class="hl-right"><div class="hl-rval" style="color:#F43460">42%</div><div class="hl-rsub">Of conversions</div></div></div>
+        <div class="hl-period" id="bizPeriod"><span class="hl-pb hl-pb-active" onclick="setPeriodHL('bizPeriod',0)">7D</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('bizPeriod',1)">1M</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('bizPeriod',2)">YTD</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('bizPeriod',3)">Max</span></div>
+      </div>
+      <div class="hl-panel" id="hlp2">
+        <div class="hl-grid"><div class="hl-mini"><div class="hl-mini-val" style="color:#F43460">14.4%</div><div class="hl-mini-label">Audience engagement rate</div><div class="hl-mini-delta">127K aware, 18.2K engaged</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#5DCAA5">1,420</div><div class="hl-mini-label">Conversions (store visits)</div><div class="hl-mini-delta">7.8% of engaged</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#F43460">+2,340</div><div class="hl-mini-label">Followers growth</div><div class="hl-mini-delta">+24%, 44.3K total</div></div><div class="hl-mini"><div class="hl-mini-val" style="color:#81226B">1,420</div><div class="hl-mini-label">Website traffic</div><div class="hl-mini-delta">+31% sessions from DOLs</div></div></div>
+        <div class="hl-card-std" style="margin-top:8px"><div class="hl-icon" style="background:rgba(129,34,107,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#81226B" stroke-width="2" stroke-linecap="round"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><rect x="2" y="9" width="20" height="13" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div><div class="hl-body"><div class="hl-name">Comment sentiment 87% positive</div><div class="hl-desc">+4% vs. previous period. Highest positivity on Elara's ingredient deep-dives and Mia's hack-test format.</div></div><div class="hl-right"><div class="hl-rval" style="color:#5DCAA5">87%</div><div class="hl-rsub">Positive</div></div></div>
+        <div class="hl-period" id="fleetPeriod"><span class="hl-pb hl-pb-active" onclick="setPeriodHL('fleetPeriod',0)">7D</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('fleetPeriod',1)">1M</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('fleetPeriod',2)">YTD</span><span class="hl-pb hl-pb-inactive" onclick="setPeriodHL('fleetPeriod',3)">Max</span></div>
+      </div>
+      <div class="hl-panel" id="hlp3">
+        <div class="hl-card-std"><div class="hl-icon" style="background:rgba(129,34,107,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#81226B" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="hl-body"><div class="hl-name">Your brand visibility: 34% of vertical conversations</div><div class="hl-desc">Up from 0.02% at activation. Leading Olive & June (28%) and Dazzle Dry (14%).</div></div><div class="hl-right"><div class="hl-rval" style="color:#F43460">34%</div><div class="hl-rsub">Share of voice</div></div></div>
+        <div class="hl-card-std"><div class="hl-icon" style="background:rgba(234,122,59,.15)"><svg viewBox="0 0 24 24" fill="none" stroke="#EA7A3B" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="hl-body"><div class="hl-name">Olive & June increasing Instagram spend</div><div class="hl-desc">Detected 2x sponsored post frequency this week. Fleet adjusting content mix to defend positioning.</div></div><div class="hl-right"><div class="hl-rval" style="color:#EA7A3B">2x</div><div class="hl-rsub">Their ad spend</div></div></div>
+        <div class="hl-card-std"><div class="hl-icon" style="background:rgba(93,202,165,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#5DCAA5" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="hl-body"><div class="hl-name">Quiet wins detected - people talking about your brand in places DOLs don't post to</div><div class="hl-desc">17 DMs asking about GlossLab products, 8 Reddit mentions, 3 blog backlinks - all organic from DOL content.</div></div><div class="hl-right"><div class="hl-rval" style="color:#5DCAA5">28</div><div class="hl-rsub">Unprompted mentions</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 2 - Attribution Dashboard ═══ -->
+  <div class="screen" id="screen2">
+    <div class="top-row"><div class="logo">Caast<span class="logo-dot">.</span></div><div class="top-mid"><div class="pg-title">Attribution <em>dashboard</em></div></div><div class="brand-tag">GlossLab</div></div>
+    <div class="period-bar">
+      <span id="pb0" onclick="setPeriod(0)" style="display:inline-block;padding:3px 8px;font-size:9px;font-weight:500;font-family:Poppins,sans-serif;border-radius:4px;cursor:pointer;border:1px solid #F43460;color:#fff;background:#F43460">7D</span>
+      <span id="pb1" onclick="setPeriod(1)" style="display:inline-block;padding:3px 8px;font-size:9px;font-weight:500;font-family:Poppins,sans-serif;border-radius:4px;cursor:pointer;border:1px solid #EEDCE4;color:#B8B6AF;background:transparent">1M</span>
+      <span id="pb2" onclick="setPeriod(2)" style="display:inline-block;padding:3px 8px;font-size:9px;font-weight:500;font-family:Poppins,sans-serif;border-radius:4px;cursor:pointer;border:1px solid #EEDCE4;color:#B8B6AF;background:transparent">YTD</span>
+      <span id="pb3" onclick="setPeriod(3)" style="display:inline-block;padding:3px 8px;font-size:9px;font-weight:500;font-family:Poppins,sans-serif;border-radius:4px;cursor:pointer;border:1px solid #EEDCE4;color:#B8B6AF;background:transparent">Max</span>
+      <span class="period-dates" id="periodDates">Mar 10 - Mar 16, 2026</span>
+    </div>
+    <div class="d-tab-bar">
+      <div class="d-dtab" data-active="true" onclick="switchDash(0)"><div class="d-dtab-icon" style="background:#F43460"></div><div class="d-dtab-label">Awareness</div></div>
+      <div class="d-dtab" data-active="false" onclick="switchDash(1)"><div class="d-dtab-icon" style="background:#F43460"></div><div class="d-dtab-label">Consideration</div></div>
+      <div class="d-dtab" data-active="false" onclick="switchDash(2)"><div class="d-dtab-icon" style="background:#F43460"></div><div class="d-dtab-label">Conversion</div></div>
+    </div>
+    <div class="d-panel active" id="dp0"><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Impressions</div><div class="kpi-value kv-count">284K</div><div class="kpi-delta kpi-up">+18%</div><div class="kpi-sub">vs. previous period</div></div><div class="kpi-card"><div class="kpi-label">Unique reach</div><div class="kpi-value kv-count">127K</div><div class="kpi-delta kpi-up">+12%</div><div class="kpi-sub">vs. previous period</div></div><div class="kpi-card"><div class="kpi-label">Follower growth</div><div class="kpi-value kv-count">+2,340</div><div class="kpi-delta kpi-up">+24%</div><div class="kpi-sub">44.3K total</div></div><div class="kpi-card"><div class="kpi-label">Content volume</div><div class="kpi-value kv-count">63</div><div class="kpi-delta kpi-flat">-</div><div class="kpi-sub">9 posts/day</div></div><div class="kpi-card"><div class="kpi-label">CPM</div><div class="kpi-value kv-money">$3.52</div><div class="kpi-delta kpi-up">-15%</div><div class="kpi-sub">vs. IG avg $8.50</div></div></div><div class="chart-section"><div class="chart-header"><div class="chart-title">Daily impressions - last 7 days</div><div class="chart-legend"><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#F43460"></div>Impressions</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#81226B"></div>Unique reach</div></div></div><div style="position:relative;width:100%;height:180px"><canvas id="chartAwareness"></canvas></div></div></div>
+    <div class="d-panel" id="dp1"><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Engagement rate</div><div class="kpi-value kv-pct">4.2%</div><div class="kpi-delta kpi-up">+0.3%</div><div class="kpi-sub">vs. avg 1.8%</div></div><div class="kpi-card"><div class="kpi-label">Saves & shares</div><div class="kpi-value kv-count">3,847</div><div class="kpi-delta kpi-up">+22%</div><div class="kpi-sub">vs. previous period</div></div><div class="kpi-card"><div class="kpi-label">CPE</div><div class="kpi-value kv-money">$0.08</div><div class="kpi-delta kpi-up">-11%</div><div class="kpi-sub">vs. paid avg $0.85</div></div><div class="kpi-card"><div class="kpi-label">Comment sentiment</div><div class="kpi-value kv-pct">87%</div><div class="kpi-delta kpi-up">+4%</div><div class="kpi-sub">positive</div></div><div class="kpi-card"><div class="kpi-label">Website traffic</div><div class="kpi-value kv-count">1,420</div><div class="kpi-delta kpi-up">+31%</div><div class="kpi-sub">sessions from DOLs</div></div></div><div class="chart-section"><div class="chart-header"><div class="chart-title">Engagement breakdown - last 7 days</div><div class="chart-legend"><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#F43460"></div>Likes</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#EC274F"></div>Comments</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#EA7A3B"></div>Saves</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#81226B"></div>Shares</div></div></div><div style="position:relative;width:100%;height:180px"><canvas id="chartConsideration"></canvas></div></div></div>
+    <div class="d-panel" id="dp2"><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Attributed orders</div><div class="kpi-value kv-count">47</div><div class="kpi-delta kpi-up">+28%</div><div class="kpi-sub">vs. previous period</div></div><div class="kpi-card"><div class="kpi-label">Attributed revenue</div><div class="kpi-value kv-money">$3,760</div><div class="kpi-delta kpi-up">+34%</div><div class="kpi-sub">15.1x monthly fee</div></div><div class="kpi-card"><div class="kpi-label">CPA</div><div class="kpi-value kv-money">$5.32</div><div class="kpi-delta kpi-up">-19%</div><div class="kpi-sub">vs. FB avg $18.40</div></div><div class="kpi-card"><div class="kpi-label">Conversion rate</div><div class="kpi-value kv-pct">3.3%</div><div class="kpi-delta kpi-up">+0.5%</div><div class="kpi-sub">clicks to orders</div></div><div class="kpi-card"><div class="kpi-label">EMV</div><div class="kpi-value kv-money">$18.4K</div><div class="kpi-delta kpi-up">+21%</div><div class="kpi-sub">earned media value</div></div></div><div class="chart-section"><div class="chart-header"><div class="chart-title">Revenue attribution - last 7 days</div><div class="chart-legend"><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#F43460"></div>Attributed revenue</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#EA7A3B"></div>Orders</div></div></div><div style="position:relative;width:100%;height:180px"><canvas id="chartConversion"></canvas></div></div></div>
+  </div>
+
+  <!-- ═══ SCREEN 3 - Content Plan ═══ -->
+  <div class="screen" id="screen3">
+    <div class="top-row"><div class="logo">Caast<span class="logo-dot">.</span></div><div class="top-mid"><div class="pg-title">Current content <em>plan</em></div><div class="pg-sub">9 posts across 3 DOLs - updated 24/7</div></div><div class="brand-tag">GlossLab</div></div>
+    <div class="live-bar"><div class="live-dot-w"><div class="live-d"></div><div class="live-ping"></div></div><div class="live-label">Content plan is live and auto-updating</div></div>
+    <div class="cp-tab-bar">
+      <div class="cp-dtab" data-active="true" onclick="switchCP(0)"><div class="tab-av" style="background:linear-gradient(135deg,#F43460,#EC274F)">EV</div><div class="tab-name">Elara Voss</div></div>
+      <div class="cp-dtab" data-active="false" onclick="switchCP(1)"><div class="tab-av" style="background:linear-gradient(135deg,#EC274F,#EA7A3B)">MC</div><div class="tab-name">Mia Chen</div></div>
+      <div class="cp-dtab" data-active="false" onclick="switchCP(2)"><div class="tab-av" style="background:linear-gradient(135deg,#81226B,#F43460)">SR</div><div class="tab-name">Sofia Reyes</div></div>
+    </div>
+    <div class="cp-panel active" id="cp0"><div class="posts-row"><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#F43460,#EC274F)">EV</div><div class="sp-user">elara.skinscience</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">9 AM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><rect x="20" y="20" width="160" height="30" rx="4" fill="rgba(200,168,130,.2)"/><text x="100" y="40" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="600" fill="#2D2926">#CLEANGELNAILS TREND REPORT</text><g class="af1"><rect x="22" y="65" width="72" height="55" rx="8" fill="#E8DDD4"/><text x="58" y="85" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#C8A882">+340%</text><text x="58" y="100" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">TikTok growth</text><text x="58" y="112" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">this week</text></g><g class="af2"><rect x="106" y="65" width="72" height="55" rx="8" fill="#E0D3C8"/><text x="142" y="85" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#E07A5F">2.4M</text><text x="142" y="100" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">views</text><text x="142" y="112" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">and growing</text></g><rect x="22" y="132" width="156" height="48" rx="8" fill="#E4D8CE"/><text x="100" y="152" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="#2D2926">Why clean gel is winning</text><text x="100" y="166" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">5 science-backed reasons the trend is here to stay</text><text x="100" y="196" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Swipe for the full breakdown &#8594;</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(93,202,165,.12);color:#5DCAA5">Trending</span><span class="sp-trigger-text">#cleangelnails +340%</span></div><div class="sp-cap"><div class="sp-cap-user">elara.skinscience</div><div class="sp-cap-text">The clean gel movement isn't a fad. The science says it's the future of nail care.</div><div class="sp-tags">#cleangelnails #glosslab #nailscience</div></div><div class="sp-eng"><span>&#9825; 1,240</span><span>&#9741; 89</span><span>&#8634; 342</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#F43460,#EC274F)">EV</div><div class="sp-user">elara.skinscience</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">2 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="20" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" fill="#2D2926" letter-spacing="1">HONEST COMPARISON</text><text x="100" y="40" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="600" fill="#2D2926">GlossLab vs. Olive &amp; June</text><text x="100" y="52" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">at-home gel kit breakdown</text><rect x="14" y="62" width="82" height="22" rx="4" fill="#C8A882"/><text x="55" y="76" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#fff">GlossLab</text><rect x="104" y="62" width="82" height="22" rx="4" fill="#E0D3C8"/><text x="145" y="76" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Olive &amp; June</text><text x="100" y="100" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">INGREDIENTS</text><text x="55" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#8BA888">12 clean</text><text x="145" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#E07A5F">7 clean</text><line x1="20" y1="122" x2="180" y2="122" stroke="#E0D3C8" stroke-width=".5"/><text x="100" y="138" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">PRICE</text><text x="55" y="152" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#5C9EAD">$38</text><text x="145" y="152" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#2D2926">$42</text><line x1="20" y1="160" x2="180" y2="160" stroke="#E0D3C8" stroke-width=".5"/><text x="100" y="176" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">DURABILITY</text><text x="55" y="190" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#C8A882">21 days</text><text x="145" y="190" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#2D2926">14 days</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(234,122,59,.15);color:#EA7A3B">Competitive</span><span class="sp-trigger-text">Olive &amp; June gel kit launch</span></div><div class="sp-cap"><div class="sp-cap-user">elara.skinscience</div><div class="sp-cap-text">I broke down both kits ingredient by ingredient. The results speak for themselves.</div><div class="sp-tags">#glosslab #gelkit #honestcomparison #cleanbeauty</div></div><div class="sp-eng"><span>&#9825; 2,180</span><span>&#9741; 156</span><span>&#8634; 487</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#F43460,#EC274F)">EV</div><div class="sp-user">elara.skinscience</div><div class="sp-badges"><span class="sp-badge">PIN</span><span class="sp-badge">7 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="22" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="600" fill="#2D2926">Spring nail prep guide</text><text x="100" y="34" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">get your nails ready for the season</text><rect x="14" y="44" width="172" height="35" rx="6" fill="#E8DDD4"/><circle cx="32" cy="62" r="10" fill="#C8A882"/><text x="32" y="65" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">1</text><text x="50" y="57" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Deep hydration week</text><text x="50" y="68" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Cuticle oil 2x daily for 7 days</text><rect x="14" y="84" width="172" height="35" rx="6" fill="#E4D8CE"/><circle cx="32" cy="102" r="10" fill="#E07A5F"/><text x="32" y="105" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#fff">2</text><text x="50" y="97" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Shape and buff</text><text x="50" y="108" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Glass file only - almond or oval for spring</text><rect x="14" y="124" width="172" height="35" rx="6" fill="#E8DDD4"/><circle cx="32" cy="142" r="10" fill="#8BA888"/><text x="32" y="145" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#fff">3</text><text x="50" y="137" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Color selection</text><text x="50" y="148" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Pastels and nudes trending for spring 2026</text><rect x="14" y="164" width="172" height="28" rx="6" fill="#E0D3C8"/><text x="100" y="182" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">Use code SPRING15 for 15% off</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(244,52,96,.1);color:#F43460">Opportunity</span><span class="sp-trigger-text">Spring season + SPRING15 code</span></div><div class="sp-cap"><div class="sp-cap-user">elara.skinscience</div><div class="sp-cap-text">Spring nails start now. Pin this guide and grab 15% off the prep essentials.</div><div class="sp-tags">#glosslab #springnails #nailprep #SPRING15</div></div><div class="sp-eng"><span>&#9825; 620</span><span>&#128204; 2,140</span></div></div></div></div>
+    <div class="cp-panel" id="cp1"><div class="posts-row"><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#EC274F,#EA7A3B)">MC</div><div class="sp-user">mia.nailalchemy</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">10 AM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="22" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="600" fill="#2D2926">Clean gel trend: my take</text><text x="100" y="34" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">why I switched and never looked back</text><g class="af1"><rect x="20" y="50" width="76" height="70" rx="10" fill="#E8DDD4"/><text x="58" y="78" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">Before</text><text x="58" y="95" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">Peeling, yellowing</text><text x="58" y="108" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#E07A5F">3 brands tried</text></g><g class="af2"><rect x="104" y="50" width="76" height="70" rx="10" fill="#E4D8CE"/><text x="142" y="78" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">After</text><text x="142" y="95" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">Strong, natural</text><text x="142" y="108" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#8BA888">GlossLab clean gel</text></g><rect x="20" y="132" width="160" height="50" rx="8" fill="#E0D3C8"/><text x="100" y="152" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">The clean difference is real</text><text x="100" y="168" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">12 ingredients vs. 40+ in traditional gel</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(93,202,165,.12);color:#5DCAA5">Trending</span><span class="sp-trigger-text">#cleangelnails wave</span></div><div class="sp-cap"><div class="sp-cap-user">mia.nailalchemy</div><div class="sp-cap-text">The clean gel revolution is real. Here's what happened when I switched everything.</div><div class="sp-tags">#cleangelnails #glosslab #nailalchemy</div></div><div class="sp-eng"><span>&#9825; 1,890</span><span>&#9741; 134</span><span>&#8634; 567</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#EC274F,#EA7A3B)">MC</div><div class="sp-user">mia.nailalchemy</div><div class="sp-badges"><span class="sp-badge">TT</span><span class="sp-badge">3 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="20" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="600" fill="#2D2926">Hack test: spring edition</text><text x="100" y="32" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">3 spring nail hacks rated</text><rect x="14" y="42" width="172" height="46" rx="8" fill="#E8DDD4"/><circle cx="38" cy="65" r="14" fill="rgba(139,168,136,.15)"/><text x="38" y="62" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" fill="#8BA888">&#10003;</text><text x="38" y="74" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">YES</text><text x="62" y="58" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">Pastel layering technique</text><text x="62" y="70" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Two thin coats of different pastels</text><text x="62" y="80" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">Stunning depth effect</text><rect x="14" y="94" width="172" height="46" rx="8" fill="#E4D8CE"/><circle cx="38" cy="117" r="14" fill="rgba(212,166,86,.15)"/><text x="38" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" fill="#D4A656">~</text><text x="38" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#D4A656">MEH</text><text x="62" y="110" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">Flower stamp nails</text><text x="62" y="122" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Cute but stamps smudge easily</text><text x="62" y="132" font-family="Poppins,sans-serif" font-size="5" fill="#D4A656">Better with dotting tool instead</text><rect x="14" y="146" width="172" height="46" rx="8" fill="#E8DDD4"/><circle cx="38" cy="169" r="14" fill="rgba(226,75,74,.15)"/><text x="38" y="166" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" fill="#E24B4A">&#10007;</text><text x="38" y="178" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#E24B4A">SKIP</text><text x="62" y="162" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">UV gel without a lamp</text><text x="62" y="174" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Doesn't cure properly. Peels day 2.</text><text x="62" y="184" font-family="Poppins,sans-serif" font-size="5" fill="#E24B4A">Save your money</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(129,34,107,.1);color:#81226B">High performer</span><span class="sp-trigger-text">"Hacks tested" format 3x saves</span></div><div class="sp-cap"><div class="sp-cap-user">mia.nailalchemy</div><div class="sp-cap-text">Spring edition of the series you love. One was a total surprise this time.</div><div class="sp-tags">#glosslab #nailhacks #springnails #tested</div></div><div class="sp-eng"><span>&#9825; 2,670</span><span>&#9741; 210</span><span>&#8634; 945</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#EC274F,#EA7A3B)">MC</div><div class="sp-user">mia.nailalchemy</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">8 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="22" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="600" fill="#2D2926">Spring sale alert</text><text x="100" y="36" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">GlossLab exclusive for my community</text><g class="af1"><rect x="30" y="52" width="140" height="70" rx="12" fill="#E0D3C8"/><text x="100" y="80" text-anchor="middle" font-family="Poppins,sans-serif" font-size="28" font-weight="600" fill="#C8A882">15%</text><text x="100" y="98" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" fill="#2D2926">off everything</text></g><rect x="40" y="134" width="120" height="30" rx="6" fill="#C8A882"/><text x="100" y="153" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" font-weight="600" fill="#fff">SPRING15</text><text x="100" y="180" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" fill="#2D2926">Valid this week only</text><text x="100" y="194" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Link in bio &#8594;</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(244,52,96,.1);color:#F43460">Opportunity</span><span class="sp-trigger-text">Spring promo SPRING15</span></div><div class="sp-cap"><div class="sp-cap-user">mia.nailalchemy</div><div class="sp-cap-text">Spring nails deserve spring prices. GlossLab gave me an exclusive code - grab it before it's gone.</div><div class="sp-tags">#glosslab #SPRING15 #nailalchemy #springsale</div></div><div class="sp-eng"><span>&#9825; 1,120</span><span>&#9741; 67</span><span>&#8634; 312</span></div></div></div></div>
+    <div class="cp-panel" id="cp2"><div class="posts-row"><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#81226B,#F43460)">SR</div><div class="sp-user">sofia.ritualbeauty</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">8:30 AM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="18" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926" letter-spacing="1">APPLICATION TIPS</text><text x="100" y="36" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="600" fill="#2D2926">At-home gel: the drying fix</text><text x="100" y="50" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">the trick that changes everything</text><g class="af1"><circle cx="60" cy="96" r="30" fill="#E8DDD4" stroke="#D4837E" stroke-width=".5"/><text x="60" y="90" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#D4837E">Before</text><text x="60" y="104" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Thick coat</text><text x="60" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">= slow dry</text></g><g class="af2"><circle cx="140" cy="96" r="30" fill="#E4D8CE" stroke="#8BA888" stroke-width=".5"/><text x="140" y="90" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#8BA888">After</text><text x="140" y="104" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">2 thin coats</text><text x="140" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">= perfect cure</text></g><rect x="20" y="140" width="160" height="42" rx="8" fill="#E0D3C8"/><text x="100" y="158" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="500" fill="#2D2926">The 2-coat method</text><text x="100" y="172" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">Thinner layers = faster cure + longer wear</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(236,39,79,.12);color:#EC274F">Product signal</span><span class="sp-trigger-text">Gel Kit drying time reviews</span></div><div class="sp-cap"><div class="sp-cap-user">sofia.ritualbeauty</div><div class="sp-cap-text">If your at-home gel is taking forever to dry, you're probably making this one mistake.</div><div class="sp-tags">#glosslab #geltips #athomegel #ritualbeauty</div></div><div class="sp-eng"><span>&#9825; 1,560</span><span>&#9741; 178</span><span>&#8634; 423</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#81226B,#F43460)">SR</div><div class="sp-user">sofia.ritualbeauty</div><div class="sp-badges"><span class="sp-badge">PIN</span><span class="sp-badge">12 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="20" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="600" fill="#2D2926">Spring self-care ritual</text><text x="100" y="32" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">new season, new routine</text><line x1="30" y1="44" x2="30" y2="178" stroke="#E0D3C8" stroke-width="2"/><circle cx="30" cy="58" r="8" fill="#C8A882"/><text x="30" y="61" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">1</text><text x="46" y="54" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Exfoliate hands</text><text x="46" y="64" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Sugar scrub, focus on knuckles and cuticles</text><circle cx="30" cy="92" r="8" fill="#E07A5F"/><text x="30" y="95" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#fff">2</text><text x="46" y="88" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Nail soak</text><text x="46" y="98" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Warm water + jojoba + lemon, 5 minutes</text><circle cx="30" cy="126" r="8" fill="#8BA888"/><text x="30" y="129" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#fff">3</text><text x="46" y="122" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Spring color</text><text x="46" y="132" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Apply GlossLab's new pastel collection</text><circle cx="30" cy="160" r="8" fill="#D4837E"/><text x="30" y="163" text-anchor="middle" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#fff">4</text><text x="46" y="156" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Lock in moisture</text><text x="46" y="166" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Rich hand cream + cotton gloves overnight</text><text x="100" y="192" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#2D2926">Use code SPRING15 for 15% off ritual essentials</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(244,52,96,.1);color:#F43460">Opportunity</span><span class="sp-trigger-text">Spring season + SPRING15</span></div><div class="sp-cap"><div class="sp-cap-user">sofia.ritualbeauty</div><div class="sp-cap-text">New season means a new ritual. Pin this for your spring reset weekend.</div><div class="sp-tags">#glosslab #springritual #selfcare #SPRING15</div></div><div class="sp-eng"><span>&#9825; 890</span><span>&#128204; 3,450</span></div></div><div class="sp"><div class="sp-head"><div class="sp-av" style="background:linear-gradient(135deg,#81226B,#F43460)">SR</div><div class="sp-user">sofia.ritualbeauty</div><div class="sp-badges"><span class="sp-badge">IG</span><span class="sp-badge">6:30 PM</span></div></div><div class="sp-visual"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="200" height="200" fill="#F2EDE8"/><text x="100" y="18" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926" letter-spacing="1">FORMAT REMIX</text><text x="100" y="36" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="600" fill="#2D2926">Beauty rituals - tested</text><text x="100" y="50" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#2D2926">I tested 3 self-care trends so you don't have to</text><rect x="14" y="60" width="172" height="40" rx="8" fill="#E8DDD4"/><circle cx="38" cy="80" r="12" fill="rgba(139,168,136,.15)"/><text x="38" y="77" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" fill="#8BA888">&#10003;</text><text x="38" y="88" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">YES</text><text x="62" y="76" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Gua sha for hands</text><text x="62" y="88" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">Reduces puffiness, feels incredible</text><rect x="14" y="106" width="172" height="40" rx="8" fill="#E4D8CE"/><circle cx="38" cy="126" r="12" fill="rgba(139,168,136,.15)"/><text x="38" y="123" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" fill="#8BA888">&#10003;</text><text x="38" y="134" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">YES</text><text x="62" y="122" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Nail oil as cuticle mask</text><text x="62" y="134" font-family="Poppins,sans-serif" font-size="5" fill="#8BA888">Leave on 30 min under gloves = magic</text><rect x="14" y="152" width="172" height="40" rx="8" fill="#E8DDD4"/><circle cx="38" cy="172" r="12" fill="rgba(226,75,74,.15)"/><text x="38" y="169" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" fill="#E24B4A">&#10007;</text><text x="38" y="180" text-anchor="middle" font-family="Poppins,sans-serif" font-size="5" fill="#E24B4A">SKIP</text><text x="62" y="168" font-family="Poppins,sans-serif" font-size="7" font-weight="500" fill="#2D2926">Ice roller on nails</text><text x="62" y="180" font-family="Poppins,sans-serif" font-size="5" fill="#E24B4A">Too cold, causes brittleness</text></svg></div><div class="sp-trigger"><span class="sp-trigger-badge" style="background:rgba(129,34,107,.1);color:#81226B">High performer</span><span class="sp-trigger-text">"Tested" format adapted from Mia</span></div><div class="sp-cap"><div class="sp-cap-user">sofia.ritualbeauty</div><div class="sp-cap-text">Borrowing Mia's format because you asked for it. Self-care edition - two wins and one to avoid.</div><div class="sp-tags">#glosslab #ritualbeauty #tested #selfcaretips</div></div><div class="sp-eng"><span>&#9825; 1,780</span><span>&#9741; 145</span><span>&#8634; 620</span></div></div></div></div>
+  </div>
+
+  <!-- ═══ SCREEN 4 - Account Settings ═══ -->
+  <div class="screen" id="screen4">
+    <div class="top-row" style="max-width:460px"><div class="logo">Caast<span class="logo-dot">.</span></div><div class="top-mid"><div class="pg-title">Account <em>settings</em></div></div><div class="brand-tag">GlossLab</div></div>
+    <div class="settings-wrap">
+      <div class="section"><div class="sec-lbl">Your account</div><div class="field-row"><div class="field"><div class="f-label">Business name</div><input class="f-input prefilled" type="text" value="GlossLab"></div><div class="field"><div class="f-label">Contact name</div><input class="f-input prefilled" type="text" value="Rachel Glass"></div></div><div class="field-row"><div class="field"><div class="f-label">Email</div><input class="f-input prefilled" type="email" value="rachel@glosslab.com"></div><div class="field"><div class="f-label">Phone</div><input class="f-input prefilled" type="tel" value="+1 (212) 555-0187"></div></div><span class="f-link">Change password</span></div>
+      <div class="section"><div class="sec-lbl">Your plan</div><div class="plan-row"><div class="plan-current"><div class="plan-info"><div class="plan-name">Growth</div><div class="plan-price">$1,000/month</div></div><div class="plan-active">Active</div></div><div class="plan-change-wrap"><span class="plan-change">Change plan &#8594;</span></div></div><div class="plan-details"><div class="pd-item"><div class="pd-label">Billing cycle</div><div class="pd-value">Monthly</div></div><div class="pd-item"><div class="pd-label">Next payment</div><div class="pd-value">Apr 15, 2026</div></div><div class="pd-item"><div class="pd-label">Member since</div><div class="pd-value">Dec 1, 2025</div></div></div><div class="set-platforms-grid">
+        <div class="set-mini set-mini-master" id="setMiniAll" onclick="setConnectAllPlatforms()">
+          <div class="set-mini-icon" id="setMiniAllIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#F43460" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <div class="set-mini-label" id="setMiniAllLabel">Connect all</div>
+        </div>
+        <div class="set-mini" id="setMiniShopify">
+          <div class="set-mini-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#95BF47" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 8v9" stroke="#95BF47" stroke-width="1.2" stroke-linecap="round"/><path d="M9 9.5h6" stroke="#95BF47" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <div class="set-mini-label">Shopify</div>
+        </div>
+        <div class="set-mini" id="setMiniInstagram">
+          <div class="set-mini-icon"><svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igGradSet" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#igGradSet)" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="url(#igGradSet)" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="url(#igGradSet)"/></svg></div>
+          <div class="set-mini-label">Instagram</div>
+        </div>
+        <div class="set-mini" id="setMiniTikTok">
+          <div class="set-mini-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#1F1F1F"/></svg></div>
+          <div class="set-mini-label">TikTok</div>
+        </div>
+      </div>
+      <div class="set-platforms-status" id="setPlatformsStatus">
+        <div class="set-platforms-status-dot" id="setPlatformsStatusDot"></div>
+        <span class="set-platforms-status-text" id="setPlatformsStatusText">0 of 3 connected</span>
+        <span class="set-platforms-status-sep">&middot;</span>
+        <span class="set-platforms-status-sub" id="setPlatformsStatusSub">Dashboard will show partial data until linked</span>
+      </div></div>
+      <div class="section"><div class="sec-lbl">Billing</div><div class="billing-card"><div class="card-icon"><span style="font-size:9px;color:#81226B;font-weight:500">VISA</span></div><div class="card-info"><div class="card-label">Ending in 4242</div><div class="card-exp">Expires 08/2028</div></div></div><div class="billing-links"><span class="f-link">Update payment method</span><span class="f-link">Download invoices</span></div></div>
+    </div>
+  </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+function navTo(id, idx) {
+  var items = document.querySelectorAll('.top-nav-item');
+  for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+  items[idx].classList.add('active');
+  goScreen(id);
+}
+function goScreen(id){var s=document.querySelectorAll('.screen');for(var i=0;i<s.length;i++)s[i].classList.remove('show');document.getElementById(id).classList.add('show');if(id==='screen2')buildAwareness();if(id==='screen1')startRadar();var map={'screen1':0,'screen2':1,'screen3':2,'screen4':3};var items=document.querySelectorAll('.top-nav-item');for(var j=0;j<items.length;j++)items[j].classList.remove('active');if(map[id]!==undefined)items[map[id]].classList.add('active');}
+function animateInsights(){var c=document.querySelectorAll('.ic-anim');c.forEach(function(e){e.classList.remove('show');});c.forEach(function(e,i){setTimeout(function(){e.classList.add('show');},200+i*150);});}
+var periods=[{dates:'Mar 10 - Mar 16, 2026'},{dates:'Feb 15 - Mar 16, 2026'},{dates:'Jan 1 - Mar 16, 2026'},{dates:'Dec 1, 2025 - Mar 16, 2026'}];
+
+function setIIPeriod(idx){for(var i=0;i<4;i++){var el=document.getElementById('ii-pb'+i);if(i===idx){el.style.border='1px solid #F43460';el.style.color='#fff';el.style.background='#F43460';}else{el.style.border='1px solid #EEDCE4';el.style.color='#B8B6AF';el.style.background='transparent';}}document.getElementById('iiPeriodDates').textContent=periods[idx].dates;}
+function setPeriod(idx){for(var i=0;i<4;i++){var el=document.getElementById('pb'+i);if(i===idx){el.style.border='1px solid #F43460';el.style.color='#fff';el.style.background='#F43460';}else{el.style.border='1px solid #EEDCE4';el.style.color='#B8B6AF';el.style.background='transparent';}}document.getElementById('periodDates').textContent=periods[idx].dates;}
+var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],chartInstances={},gridColor='rgba(238,220,228,0.8)',tickColor='#B8B6AF';
+var commonScales={x:{grid:{display:false},ticks:{color:tickColor,font:{size:10,family:'Poppins'}}},y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:9,family:'Poppins'}},border:{display:false}}};
+var commonOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'#EEDCE4',borderWidth:1,titleColor:'#81226B',bodyColor:'#6D6A65',titleFont:{family:'Poppins',size:11,weight:'500'},bodyFont:{family:'Poppins',size:10},padding:8,cornerRadius:6}},interaction:{intersect:false,mode:'index'}};
+function buildAwareness(){var ctx=document.getElementById('chartAwareness');if(chartInstances.awareness)chartInstances.awareness.destroy();chartInstances.awareness=new Chart(ctx,{type:'line',data:{labels:days,datasets:[{label:'Impressions',data:[38000,41200,36800,44500,42100,39800,41600],borderColor:'#F43460',backgroundColor:'rgba(244,52,96,0.08)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#F43460',borderWidth:2},{label:'Unique reach',data:[17200,18800,16500,20100,19200,18100,18900],borderColor:'#81226B',backgroundColor:'rgba(129,34,107,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#81226B',borderWidth:2}]},options:{...commonOpts,scales:{...commonScales,y:{...commonScales.y,ticks:{...commonScales.y.ticks,callback:function(v){return(v/1000)+'K'}}}}}});}
+function buildConsideration(){var ctx=document.getElementById('chartConsideration');if(chartInstances.consideration)chartInstances.consideration.destroy();chartInstances.consideration=new Chart(ctx,{type:'bar',data:{labels:days,datasets:[{label:'Likes',data:[1120,1340,980,1560,1420,1280,1380],backgroundColor:'#F43460',borderRadius:3},{label:'Comments',data:[142,168,124,198,176,156,172],backgroundColor:'#EC274F',borderRadius:3},{label:'Saves',data:[286,324,248,412,378,298,356],backgroundColor:'#EA7A3B',borderRadius:3},{label:'Shares',data:[86,102,78,134,118,96,112],backgroundColor:'#81226B',borderRadius:3}]},options:{...commonOpts,scales:{...commonScales,x:{...commonScales.x,stacked:true},y:{...commonScales.y,stacked:true}}}});}
+function buildConversion(){var ctx=document.getElementById('chartConversion');if(chartInstances.conversion)chartInstances.conversion.destroy();chartInstances.conversion=new Chart(ctx,{type:'bar',data:{labels:days,datasets:[{label:'Revenue',data:[420,580,340,680,620,510,610],backgroundColor:'#F43460',borderRadius:3,yAxisID:'y',order:2},{label:'Orders',data:[5,7,4,9,8,6,8],type:'line',borderColor:'#EA7A3B',backgroundColor:'transparent',pointBackgroundColor:'#EA7A3B',pointRadius:5,borderWidth:2,tension:0.3,yAxisID:'y1',order:1}]},options:{...commonOpts,scales:{x:{grid:{display:false},ticks:{color:tickColor,font:{size:10,family:'Poppins'}}},y:{position:'left',grid:{color:gridColor},ticks:{color:tickColor,font:{size:9,family:'Poppins'},callback:function(v){return '$'+v}},border:{display:false}},y1:{position:'right',grid:{display:false},ticks:{color:'#EA7A3B',font:{size:9,family:'Poppins'}},border:{display:false}}}}});}
+function switchDash(idx){var t=document.querySelectorAll('.d-dtab'),p=document.querySelectorAll('.d-panel');for(var i=0;i<t.length;i++){t[i].setAttribute('data-active','false');p[i].classList.remove('active');}t[idx].setAttribute('data-active','true');p[idx].classList.add('active');if(idx===0)buildAwareness();if(idx===1)buildConsideration();if(idx===2)buildConversion();}
+function switchCP(idx){var t=document.querySelectorAll('.cp-dtab'),p=document.querySelectorAll('.cp-panel');for(var i=0;i<t.length;i++){t[i].setAttribute('data-active','false');p[i].classList.remove('active');}t[idx].setAttribute('data-active','true');p[idx].classList.add('active');}
+
+
+var loginResendIv,loginSelectedMethod='email';
+function validateLogin(){
+  var e=document.getElementById('loginEmail').value.trim();
+  var p=document.getElementById('loginPw').value;
+  document.getElementById('loginBtn').disabled=!(e.indexOf('@')>0&&e.indexOf('.')>0&&p.length>=6);
+}
+function toggleLoginPw(){
+  var inp=document.getElementById('loginPw');var icon=document.getElementById('loginEyeIcon');
+  if(inp.type==='password'){inp.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}
+  else{inp.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}
+}
+function loginSubmit(){
+  if(document.getElementById('loginBtn').disabled)return;
+  var email=document.getElementById('loginEmail').value.trim();
+  var masked=email.charAt(0)+'***'+email.charAt(email.indexOf('@')-1)+email.substring(email.indexOf('@'));
+  document.getElementById('loginMethodEmailDetail').textContent=masked;
+  showLoginStep(2);
+}
+function selectLoginMethod(m){
+  loginSelectedMethod=m;
+  document.getElementById('loginMethodEmail').classList.toggle('selected',m==='email');
+  document.getElementById('loginMethodPhone').classList.toggle('selected',m==='phone');
+}
+function sendLoginCode(){
+  var dest=loginSelectedMethod==='email'?document.getElementById('loginMethodEmailDetail').textContent:'***-***-0187';
+  document.getElementById('loginSentTo').textContent=dest;
+  showLoginStep(3);
+  setTimeout(function(){document.getElementById('lc0').focus();},300);
+  startLoginResend();
+}
+function loginDigit(idx){
+  var el=document.getElementById('lc'+idx);var v=el.value.replace(/[^0-9]/g,'');el.value=v;
+  if(v){el.classList.add('filled');if(idx<5)document.getElementById('lc'+(idx+1)).focus();if(idx===5)loginCheckCode();}else{el.classList.remove('filled');}
+}
+function loginDigitKey(e,idx){
+  if(e.key==='Backspace'&&!document.getElementById('lc'+idx).value&&idx>0){document.getElementById('lc'+(idx-1)).focus();document.getElementById('lc'+(idx-1)).value='';document.getElementById('lc'+(idx-1)).classList.remove('filled');}
+  if(e.key==='v'&&(e.ctrlKey||e.metaKey)){e.preventDefault();navigator.clipboard.readText().then(function(t){var digits=t.replace(/[^0-9]/g,'').slice(0,6);for(var i=0;i<digits.length;i++){var d=document.getElementById('lc'+i);d.value=digits[i];d.classList.add('filled');}if(digits.length===6)loginCheckCode();});}
+}
+function loginCheckCode(){
+  var code='';for(var i=0;i<6;i++)code+=document.getElementById('lc'+i).value;
+  if(code.length===6){clearInterval(loginResendIv);showLoginStep(4);
+    setTimeout(function(){
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('dashboardWrap').classList.add('show');
+      goScreen('screen1');
+    },2000);
+  }
+}
+function startLoginResend(){
+  var sec=30;var link=document.getElementById('loginResendLink');var timer=document.getElementById('loginResendTimer');
+  link.style.pointerEvents='none';link.style.opacity='.4';clearInterval(loginResendIv);
+  loginResendIv=setInterval(function(){sec--;timer.textContent='0:'+(sec<10?'0':'')+sec;if(sec<=0){clearInterval(loginResendIv);timer.textContent='';link.style.pointerEvents='auto';link.style.opacity='1';}},1000);
+}
+function showLoginStep(n){
+  for(var i=1;i<=4;i++)document.getElementById('loginStep'+i).classList.remove('show');
+  document.getElementById('loginStep'+n).classList.add('show');
+}
+function loginGoBack(){
+  clearInterval(loginResendIv);
+  for(var i=0;i<6;i++){var d=document.getElementById('lc'+i);d.value='';d.classList.remove('filled');}
+  showLoginStep(2);
+}
+
+var radarStarted=false;
+function startRadar(){
+  if(radarStarted)return;radarStarted=true;
+  var sweep=document.getElementById('radarSweep');var angle=0;
+  function rotateSweep(){angle=(angle+0.4)%360;sweep.style.transform='rotate('+angle+'deg)';requestAnimationFrame(rotateSweep);}
+  rotateSweep();
+  var blips=[document.getElementById('blip1'),document.getElementById('blip2'),document.getElementById('blip3')];
+  function randomBlip(){var b=blips[Math.floor(Math.random()*blips.length)];var a=Math.random()*Math.PI*2;var r=38+Math.random()*88;b.setAttribute('cx',Math.round(150+Math.cos(a)*r));b.setAttribute('cy',Math.round(150+Math.sin(a)*r));b.style.transition='none';b.style.opacity='0.8';setTimeout(function(){b.style.transition='opacity 1.5s ease';b.style.opacity='0';},300);}
+  setInterval(randomBlip,800);
+  var shape=document.getElementById('radarShape');var basePoints=[[150,52],[228,93],[252,163],[215,235],[112,243],[57,188],[47,112],[89,66]];
+  function breatheShape(){var pts=basePoints.map(function(p){return Math.round(p[0]+(Math.random()-0.5)*6)+','+Math.round(p[1]+(Math.random()-0.5)*6);}).join(' ');shape.setAttribute('points',pts);}
+  setInterval(breatheShape,2000);
+}
+function showHL(idx){var tabs=document.querySelectorAll('.hl-tab');var panels=document.querySelectorAll('.hl-panel');for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active');panels[i].classList.remove('active');}tabs[idx].classList.add('active');panels[idx].classList.add('active');}
+function setPeriodHL(id,idx){var wrap=document.getElementById(id);var spans=wrap.querySelectorAll('.hl-pb');for(var i=0;i<spans.length;i++){spans[i].className='hl-pb '+(i===idx?'hl-pb-active':'hl-pb-inactive');}}
+
+function setConnectAllPlatforms(){
+  var master=document.getElementById('setMiniAll');
+  if(master.classList.contains('connected')) return;
+  var ids=['setMiniShopify','setMiniInstagram','setMiniTikTok'];
+  ids.forEach(function(id,i){
+    setTimeout(function(){
+      var card=document.getElementById(id);
+      card.classList.add('connected');
+    },200+i*250);
+  });
+  setTimeout(function(){
+    master.classList.add('connected');
+    document.getElementById('setMiniAllLabel').textContent='All connected';
+    document.getElementById('setMiniAllIcon').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#5DCAA5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+    var statusDot=document.getElementById('setPlatformsStatusDot');
+    var statusText=document.getElementById('setPlatformsStatusText');
+    var statusSub=document.getElementById('setPlatformsStatusSub');
+    var statusSep=document.querySelector('.set-platforms-status-sep');
+    statusDot.classList.add('complete');
+    statusText.classList.add('complete');
+    statusText.textContent='All platforms connected';
+    if(statusSep) statusSep.style.display='none';
+    if(statusSub) statusSub.style.display='none';
+  },200+3*250+300);
+}
+
+var aiExamples=['Why did engagement spike on Tuesday?','What is my CPA this week?','What should I promote next based on inventory?'];
+var aiIdx=0;var aiGhost=document.getElementById('aiGhost');var aiInput=document.getElementById('aiInput');var aiCycling=true;
+function cycleGhost(){if(!aiCycling)return;aiGhost.classList.add('hide');setTimeout(function(){aiIdx=(aiIdx+1)%aiExamples.length;aiGhost.textContent=aiExamples[aiIdx];aiGhost.classList.remove('hide');},400);}
+setInterval(cycleGhost,4000);
+function aiTyping(){if(aiInput&&aiInput.value.length>0){aiGhost.classList.add('hide');aiCycling=false;}else if(aiGhost){aiGhost.classList.remove('hide');aiCycling=true;}}
+function aiBlur(){if(aiInput&&aiInput.value.length===0){aiGhost.classList.remove('hide');aiCycling=true;}}
+function aiSend(){var q=aiInput.value.trim();if(!q)q=aiExamples[aiIdx];aiInput.value='';aiGhost.textContent='Thinking...';aiGhost.classList.remove('hide');aiCycling=false;setTimeout(function(){aiGhost.textContent=aiExamples[aiIdx];aiCycling=true;},2000);}
+</script>
+</body>
+</html>
