@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Caast — Connection Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:#F8F1F6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;position:relative;overflow-x:hidden}
+
+body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(244,52,96,.06) 0%,transparent 70%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(149,95,232,.05) 0%,transparent 70%);pointer-events:none}
+
+.app{width:100%;max-width:1100px;display:flex;flex-direction:column;gap:18px;position:relative;z-index:1}
+
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%}
+.logo{font-size:26px;font-weight:600;color:#F43460;letter-spacing:-2.5px;line-height:1}
+.logo-dot{color:#6D6A65}
+.top-mid{flex:1;display:flex;flex-direction:column;align-items:center}
+.pg-title{font-size:16px;font-weight:500;color:#81226B}
+.pg-title em{font-style:normal;color:#F43460}
+.pg-sub{font-size:10px;color:#6D6A65;margin-top:2px}
+.brand-tag{font-size:10px;font-weight:500;color:#81226B;background:transparent;border:1px solid #D990B3;border-radius:20px;padding:5px 12px;white-space:nowrap}
+
+.step-nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.step-pill{font-size:11px;color:#6D6A65;padding:6px 14px;border:1px solid #EEDCE4;background:#fff;border-radius:20px;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;font-weight:500}
+.step-pill:hover{border-color:#F43460;color:#F43460}
+.step-pill.active{background:#F43460;color:#fff;border-color:#F43460}
+.step-pill.active:hover{color:#fff}
+.step-pill .pill-num{font-size:9px;opacity:.7;margin-right:6px}
+
+.stage{width:100%;background:#fff;border:1px solid #EEDCE4;border-radius:18px;padding:36px;min-height:580px;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(244,52,96,.04)}
+.stage-corner{position:absolute;top:14px;right:18px;font-size:9px;color:#B8B6AF;letter-spacing:1px}
+
+.step{display:none}
+.step.show{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.section-eyebrow{font-size:10px;color:#F43460;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.section-title{font-size:22px;font-weight:500;color:#81226B;margin-bottom:6px}
+.section-title em{font-style:normal;color:#F43460}
+.section-desc{font-size:12px;color:#6D6A65;line-height:1.6;margin-bottom:26px;max-width:620px}
+
+.s1-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:32px;align-items:center;min-height:440px}
+.s1-list{margin:18px 0 22px;display:flex;flex-direction:column;gap:10px}
+.s1-list-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#6D6A65;line-height:1.5}
+.s1-check{width:18px;height:18px;border-radius:50%;background:rgba(93,202,165,.15);color:#5DCAA5;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:600;margin-top:1px}
+.s1-list-item strong{color:#81226B;font-weight:500}
+
+.btn-primary{background:#F43460;color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:13px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 6px 16px -4px rgba(244,52,96,.35)}
+.btn-primary:hover{background:#EC274F;transform:translateY(-1px);box-shadow:0 10px 24px -4px rgba(244,52,96,.45)}
+.btn-secondary{background:transparent;color:#6D6A65;border:1px solid #EEDCE4;border-radius:10px;padding:13px 22px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s;margin-left:10px}
+.btn-secondary:hover{border-color:#F43460;color:#F43460}
+
+.s1-cards{display:flex;flex-direction:column;gap:10px;background:#FAF4F8;border:1px dashed #EEDCE4;border-radius:14px;padding:18px}
+.s1-cards-title{font-size:10px;font-weight:500;color:#81226B;letter-spacing:.5px;margin-bottom:4px}
+.s1-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:12px 14px}
+.s1-card-icon{width:36px;height:36px;border-radius:8px;background:#F4E9EF;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s1-card-icon svg{width:18px;height:18px}
+.s1-card-info{flex:1}
+.s1-card-name{font-size:12px;font-weight:500;color:#81226B}
+.s1-card-status{font-size:10px;color:#B8B6AF;margin-top:2px}
+.s1-card-dot{width:8px;height:8px;border-radius:50%;background:#EA7A3B}
+
+.popup-frame{max-width:520px;margin:0 auto;background:#fff;border:1px solid #EEDCE4;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(244,52,96,.18)}
+.popup-titlebar{background:#FAF4F8;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #EEDCE4}
+.popup-traffic{display:flex;gap:5px}
+.popup-dot{width:8px;height:8px;border-radius:50%}
+.popup-dot.r{background:#FF5F57}
+.popup-dot.y{background:#FEBC2E}
+.popup-dot.g{background:#28C840}
+.popup-url{flex:1;font-size:10px;color:#B8B6AF;text-align:center;background:#fff;border:1px solid #EEDCE4;border-radius:6px;padding:4px 10px;font-family:monospace}
+
+.popup-body{padding:32px 28px}
+.popup-progress{display:flex;align-items:center;gap:6px;margin-bottom:24px}
+.pp-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.pp-step-num{width:26px;height:26px;border-radius:50%;background:#F4E9EF;color:#B8B6AF;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:1px solid #EEDCE4;transition:all .3s}
+.pp-step.done .pp-step-num{background:#5DCAA5;color:#fff;border-color:#5DCAA5}
+.pp-step.active .pp-step-num{background:#F43460;color:#fff;border-color:#F43460;box-shadow:0 0 0 4px rgba(244,52,96,.18)}
+.pp-step-label{font-size:9px;color:#6D6A65;font-weight:500}
+.pp-step.active .pp-step-label{color:#F43460}
+.pp-step.done .pp-step-label{color:#5DCAA5}
+.pp-line{position:absolute;top:13px;left:60%;right:-40%;height:1px;background:#EEDCE4;z-index:0}
+.pp-line.filled{background:#5DCAA5}
+
+.popup-eyebrow{font-size:10px;color:#F43460;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:8px}
+.popup-title{font-size:18px;font-weight:500;color:#81226B;text-align:center;margin-bottom:6px}
+.popup-desc{font-size:11px;color:#6D6A65;text-align:center;line-height:1.5;margin-bottom:22px}
+
+.popup-platforms{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.pp-plat{display:flex;align-items:center;gap:12px;background:#FAF4F8;border:1px solid #EEDCE4;border-radius:10px;padding:11px 14px}
+.pp-plat-icon{width:28px;height:28px;border-radius:6px;background:#fff;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pp-plat-icon svg{width:15px;height:15px}
+.pp-plat-name{font-size:11px;font-weight:500;color:#81226B}
+.pp-plat-perm{font-size:9px;color:#6D6A65;line-height:1.4;margin-top:1px;font-weight:400}
+.pp-plat-info{flex:1}
+.pp-plat-tag{font-size:8px;color:#935FE8;background:rgba(149,95,232,.12);border:1px solid rgba(149,95,232,.25);padding:2px 6px;border-radius:3px;font-weight:500;letter-spacing:.3px}
+
+.popup-trust{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:10px;padding:11px 13px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.popup-trust-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;background:#fff;color:#F43460;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:1px solid #EEDCE4;margin-top:1px}
+.popup-trust-text{font-size:10px;color:#6D6A65;line-height:1.5}
+.popup-trust-text strong{color:#81226B;font-weight:500}
+
+.popup-cta{width:100%;background:#F43460;color:#fff;border:none;border-radius:10px;padding:13px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.popup-cta:hover{background:#EC274F}
+
+.bridge{display:flex;align-items:center;justify-content:center;gap:10px;background:#FAF4F8;border:1px solid #EEDCE4;border-radius:8px;padding:7px 12px;margin:0 auto 14px;max-width:380px;font-size:10px}
+.bridge-done{color:#5DCAA5;font-weight:500;display:flex;align-items:center;gap:5px}
+.bridge-done svg{width:11px;height:11px}
+.bridge-arrow{color:#B8B6AF}
+.bridge-now{color:#F43460;font-weight:500}
+
+.provider-frame{max-width:520px;margin:0 auto;background:#fff;border:1px solid #EEDCE4;border-radius:16px;overflow:hidden}
+
+.shopify-bar{background:#1A1A1A;padding:14px 22px;display:flex;align-items:center;gap:10px}
+.shopify-logo{display:flex;align-items:center;gap:6px;color:#fff;font-size:13px;font-weight:600}
+.shopify-bag{width:18px;height:18px;background:#95BF47;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.shopify-bag svg{width:11px;height:11px}
+.shopify-store-info{margin-left:auto;font-size:10px;color:#B0B0B0}
+
+.provider-body{padding:30px 26px}
+.shop-card{background:#FAF8F4;border:1px solid #E5E0D5;border-radius:10px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.shop-logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#F43460,#EC274F);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.shop-name{font-size:13px;font-weight:600;color:#1A1A1A}
+.shop-url{font-size:10px;color:#6D6A65;margin-top:2px}
+
+.provider-q{font-size:14px;color:#1A1A1A;margin-bottom:10px;font-weight:500}
+.perm-list{background:#FAF8F4;border:1px solid #E5E0D5;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.perm-title{font-size:10px;color:#6D6A65;font-weight:500;letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.perm-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:11px;color:#1A1A1A;line-height:1.5}
+.perm-item:last-child{margin-bottom:0}
+.perm-bullet{color:#95BF47;font-weight:600;flex-shrink:0;margin-top:1px}
+.perm-detail{font-size:10px;color:#6D6A65;margin-top:2px;line-height:1.4}
+.perm-tag-read{display:inline-block;font-size:8px;color:#5DCAA5;background:rgba(93,202,165,.12);padding:1px 5px;border-radius:3px;font-weight:500;letter-spacing:.3px;margin-left:6px;vertical-align:1px}
+.perm-tag-write{display:inline-block;font-size:8px;color:#F43460;background:rgba(244,52,96,.1);padding:1px 5px;border-radius:3px;font-weight:500;letter-spacing:.3px;margin-left:6px;vertical-align:1px}
+
+.provider-fineprint{font-size:9px;color:#6D6A65;line-height:1.5;margin-bottom:18px;padding:0 4px}
+.provider-fineprint a{color:#95BF47;text-decoration:none}
+
+.provider-actions{display:flex;gap:10px}
+.provider-cancel{flex:1;background:#fff;color:#1A1A1A;border:1px solid #E5E0D5;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.provider-cancel:hover{background:#FAF8F4}
+.provider-install{flex:2;background:#1A1A1A;color:#fff;border:none;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.provider-install:hover{background:#000}
+
+.meta-bar{background:#1877F2;padding:14px 22px;display:flex;align-items:center;gap:10px;color:#fff}
+.meta-logo{font-size:14px;font-weight:600;letter-spacing:-.3px}
+.meta-divider{width:1px;height:14px;background:rgba(255,255,255,.3)}
+.meta-flow-name{font-size:11px;font-weight:400;opacity:.95}
+.meta-info{margin-left:auto;font-size:10px;opacity:.7}
+
+.meta-card-account{background:#F0F2F5;border:1px solid #DCE0E6;border-radius:10px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.meta-account-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0}
+.meta-account-name{font-size:12px;font-weight:500;color:#1C1E21}
+.meta-account-handle{font-size:10px;color:#65676B;margin-top:1px}
+
+.meta-q{font-size:14px;color:#1C1E21;margin-bottom:10px;font-weight:500;line-height:1.4}
+.meta-q strong{font-weight:600;color:#1877F2}
+
+.meta-perm-list{background:#F0F2F5;border:1px solid #DCE0E6;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.meta-perm-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:11px;color:#1C1E21;line-height:1.5}
+.meta-perm-item:last-child{margin-bottom:0}
+.meta-perm-bullet{color:#1877F2;font-weight:600;flex-shrink:0;margin-top:1px}
+
+.meta-control-card{background:#fff;border:1px solid #DCE0E6;border-radius:10px;padding:11px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.meta-control-icon{width:18px;height:18px;border-radius:50%;background:#E7F3FF;color:#1877F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:600;margin-top:1px}
+.meta-control-text{font-size:10px;color:#1C1E21;line-height:1.5}
+.meta-control-text strong{font-weight:500}
+
+.meta-fineprint{font-size:9px;color:#65676B;line-height:1.5;margin-bottom:16px;padding:0 4px}
+.meta-fineprint a{color:#1877F2;text-decoration:none}
+
+.meta-cancel{flex:1;background:#fff;color:#1C1E21;border:1px solid #DCE0E6;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.meta-cancel:hover{background:#F0F2F5}
+.meta-continue{flex:2;background:#1877F2;color:#fff;border:none;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.meta-continue:hover{background:#1462C8}
+
+.tiktok-bar{background:#000;padding:14px 22px;display:flex;align-items:center;gap:10px;color:#fff;border-bottom:1px solid #1F1F1F}
+.tiktok-logo-wrap{display:flex;align-items:center;gap:6px}
+.tiktok-icon-bg{width:22px;height:22px;border-radius:5px;background:#fff;display:flex;align-items:center;justify-content:center}
+.tiktok-icon-bg svg{width:13px;height:13px}
+.tiktok-logo-text{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.tiktok-info{margin-left:auto;font-size:10px;color:#999}
+
+.tiktok-body{background:#0E0E0E;color:#fff;padding:30px 26px}
+.tiktok-account-card{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.tiktok-account-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#25F4EE,#FE2C55);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.tiktok-account-name{font-size:13px;font-weight:600;color:#fff}
+.tiktok-account-handle{font-size:10px;color:#999;margin-top:2px}
+
+.tiktok-q{font-size:14px;color:#fff;margin-bottom:10px;font-weight:500;line-height:1.4}
+
+.tiktok-perm-list{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.tiktok-perm-title{font-size:10px;color:#999;font-weight:500;letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.tiktok-perm-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:11px;color:#fff;line-height:1.5}
+.tiktok-perm-item:last-child{margin-bottom:0}
+.tiktok-perm-bullet{color:#FE2C55;font-weight:600;flex-shrink:0;margin-top:1px}
+.tiktok-perm-detail{font-size:10px;color:#999;margin-top:2px;line-height:1.4}
+.tiktok-perm-tag-read{display:inline-block;font-size:8px;color:#25F4EE;background:rgba(37,244,238,.12);padding:1px 5px;border-radius:3px;font-weight:500;letter-spacing:.3px;margin-left:6px;vertical-align:1px}
+.tiktok-perm-tag-write{display:inline-block;font-size:8px;color:#FE2C55;background:rgba(254,44,85,.15);padding:1px 5px;border-radius:3px;font-weight:500;letter-spacing:.3px;margin-left:6px;vertical-align:1px}
+
+.tiktok-control-card{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:11px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.tiktok-control-icon{width:18px;height:18px;border-radius:50%;background:rgba(254,44,85,.15);color:#FE2C55;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:600;margin-top:1px}
+.tiktok-control-text{font-size:10px;color:#fff;line-height:1.5}
+.tiktok-control-text strong{font-weight:500}
+
+.tiktok-fineprint{font-size:9px;color:#999;line-height:1.5;margin-bottom:16px;padding:0 4px}
+.tiktok-fineprint a{color:#25F4EE;text-decoration:none}
+
+.tiktok-cancel{flex:1;background:#1A1A1A;color:#fff;border:1px solid #2A2A2A;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.tiktok-cancel:hover{background:#2A2A2A}
+.tiktok-authorize{flex:2;background:#FE2C55;color:#fff;border:none;border-radius:8px;padding:12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.tiktok-authorize:hover{background:#E62649}
+
+.popup-success-large{padding:30px 28px}
+.success-row{display:flex;flex-direction:column;gap:8px;margin:20px 0}
+.success-platform{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EEDCE4;border-radius:10px;padding:11px 14px;animation:slideIn .4s ease backwards}
+.success-platform:nth-child(1){animation-delay:0s}
+.success-platform:nth-child(2){animation-delay:.15s}
+.success-platform:nth-child(3){animation-delay:.3s}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.sp-icon{width:30px;height:30px;border-radius:7px;background:#F4E9EF;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sp-icon svg{width:16px;height:16px}
+.sp-info{flex:1}
+.sp-name{font-size:11px;font-weight:500;color:#81226B}
+.sp-detail{font-size:9px;color:#6D6A65;margin-top:1px}
+.sp-check{width:22px;height:22px;border-radius:50%;background:rgba(93,202,165,.15);color:#5DCAA5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+
+.transit-success{width:56px;height:56px;border-radius:50%;background:rgba(93,202,165,.12);color:#5DCAA5;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px;animation:successPop .5s ease}
+@keyframes successPop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.popup-summary-card{background:#F4E9EF;border:1px solid #EEDCE4;border-radius:10px;padding:14px;margin:14px 0 18px;display:flex;align-items:center;gap:14px}
+.psc-icon{width:36px;height:36px;border-radius:8px;background:#fff;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F43460;font-size:18px}
+.psc-text{font-size:11px;color:#6D6A65;line-height:1.5}
+.psc-text strong{color:#81226B;font-weight:500}
+
+.settings-grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:680px;margin:0 auto}
+.settings-section{background:#fff;border:1px solid #EEDCE4;border-radius:14px;padding:18px}
+.set-sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.set-sec-lbl{font-size:11px;color:#81226B;font-weight:500;letter-spacing:.3px}
+.set-sec-action{font-size:10px;color:#F43460;cursor:pointer;font-weight:500}
+
+.set-platforms-list{display:flex;flex-direction:column;gap:8px}
+.set-platform-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid #EEDCE4;border-radius:10px;background:#FAF4F8;transition:all .2s}
+.set-platform-row.connected{border-color:rgba(93,202,165,.4);background:#fff}
+.set-platform-row:hover{border-color:#F43460}
+.set-pl-icon{width:32px;height:32px;border-radius:7px;background:#fff;border:1px solid #EEDCE4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.set-pl-icon svg{width:16px;height:16px}
+.set-pl-info{flex:1}
+.set-pl-name{font-size:11px;font-weight:500;color:#81226B}
+.set-pl-status{font-size:9px;color:#5DCAA5;margin-top:2px;font-weight:500;display:flex;align-items:center;gap:5px}
+.set-pl-status.disconnected{color:#EA7A3B}
+.set-pl-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.set-pl-meta{font-size:9px;color:#B8B6AF;text-align:right;line-height:1.5}
+.set-pl-action{font-size:10px;color:#F43460;cursor:pointer;font-weight:500;margin-left:8px}
+.set-pl-action.disconnect{color:#B8B6AF}
+.set-pl-action.disconnect:hover{color:#EC274F}
+
+.set-approval{display:flex;flex-direction:column;gap:14px}
+.seg-control{display:flex;background:#FAF4F8;border:1px solid #EEDCE4;border-radius:10px;padding:4px;gap:4px}
+.seg-btn{flex:1;background:transparent;border:none;border-radius:7px;padding:10px 14px;font-size:11px;font-weight:500;font-family:'Poppins',sans-serif;color:#6D6A65;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.seg-btn:hover{color:#F43460}
+.seg-btn.active{background:#F43460;color:#fff;box-shadow:0 4px 10px -3px rgba(244,52,96,.35)}
+.seg-btn.active:hover{color:#fff}
+.seg-btn svg{width:12px;height:12px}
+
+.approval-rec{font-size:10px;color:#6D6A65;line-height:1.5;display:flex;align-items:flex-start;gap:8px;background:#FAF4F8;border:1px solid #EEDCE4;border-radius:8px;padding:9px 11px}
+.approval-rec-icon{flex-shrink:0;color:#F43460;font-weight:600;margin-top:1px}
+.approval-rec strong{color:#81226B;font-weight:500}
+
+.pending-block{border:1px solid #EEDCE4;border-radius:10px;padding:12px}
+.pending-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.pending-label{font-size:10px;color:#F43460;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+.pending-count{font-size:10px;color:#6D6A65;background:#F4E9EF;padding:2px 8px;border-radius:10px;font-weight:500}
+
+.pending-post{display:flex;gap:10px;background:#FAF4F8;border:1px solid #EEDCE4;border-radius:10px;padding:10px;margin-bottom:8px}
+.pending-post:last-child{margin-bottom:0}
+.pp-thumb{width:48px;height:48px;border-radius:6px;background:linear-gradient(135deg,#F43460,#EC274F);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:600;text-align:center;line-height:1.1;padding:4px}
+.pp-thumb.t2{background:linear-gradient(135deg,#935FE8,#797FEE)}
+.pp-thumb.t3{background:linear-gradient(135deg,#EA7A3B,#F43460)}
+.pp-info{flex:1;min-width:0}
+.pp-dol{font-size:10px;font-weight:500;color:#81226B;display:flex;align-items:center;gap:6px}
+.pp-plat-tag2{font-size:8px;background:#fff;border:1px solid #EEDCE4;color:#6D6A65;padding:1px 5px;border-radius:3px;font-weight:500}
+.pp-cap{font-size:9px;color:#6D6A65;margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pp-actions{display:flex;flex-direction:column;gap:4px;align-items:flex-end;justify-content:center}
+.pp-approve{background:rgba(93,202,165,.15);color:#5DCAA5;border:none;border-radius:5px;padding:4px 10px;font-size:9px;font-weight:500;font-family:'Poppins',sans-serif;cursor:pointer}
+.pp-edit{background:transparent;color:#6D6A65;border:none;font-size:9px;cursor:pointer;font-family:'Poppins',sans-serif;padding:2px 8px}
+
+.autopublish-state{padding:24px;text-align:center;background:#FAF4F8;border:1px dashed #EEDCE4;border-radius:10px;display:none}
+.autopublish-state.show{display:block}
+.aps-icon{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #EEDCE4;color:#F43460;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px}
+.aps-title{font-size:12px;font-weight:500;color:#81226B;margin-bottom:4px}
+.aps-desc{font-size:10px;color:#6D6A65;line-height:1.5;max-width:280px;margin:0 auto}
+
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.health-card{background:#FAF4F8;border:1px solid #EEDCE4;border-radius:10px;padding:12px}
+.health-label{font-size:9px;color:#6D6A65;margin-bottom:4px}
+.health-value{font-size:14px;color:#5DCAA5;font-weight:500;display:flex;align-items:center;gap:6px}
+.health-sub{font-size:9px;color:#B8B6AF;margin-top:2px}
+
+.failure-card{background:#FFF6F0;border:1px solid #F4D5C0;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;margin-top:14px}
+.failure-icon{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid #F4D5C0;color:#EA7A3B;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;font-size:14px}
+.failure-content{flex:1}
+.failure-title{font-size:11px;font-weight:500;color:#81226B;margin-bottom:3px}
+.failure-desc{font-size:10px;color:#6D6A65;line-height:1.5;margin-bottom:8px}
+.failure-cta{font-size:10px;color:#EA7A3B;cursor:pointer;font-weight:500}
+
+.proto-note{font-size:10px;color:#B8B6AF;text-align:center;margin-top:8px;font-style:italic}
+
+@media (max-width:840px){
+  .s1-grid{grid-template-columns:1fr;gap:24px}
+  .step-pill{font-size:10px;padding:5px 10px}
+  .stage{padding:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="top-row">
+    <div class="logo">Caast<span class="logo-dot">.</span></div>
+    <div class="top-mid">
+      <div class="pg-title">Connection <em>Guide</em> &middot; UX Flow</div>
+      <div class="pg-sub">3 platforms &middot; Read + Post permissions &middot; Posting control in Settings</div>
+    </div>
+    <div class="brand-tag">GlossLab</div>
+  </div>
+
+  <div class="step-nav" id="stepNav">
+    <div class="step-pill active" data-step="1"><span class="pill-num">01</span>Trigger</div>
+    <div class="step-pill" data-step="2"><span class="pill-num">02</span>Guide</div>
+    <div class="step-pill" data-step="3"><span class="pill-num">03</span>Shopify</div>
+    <div class="step-pill" data-step="4"><span class="pill-num">04</span>Instagram (Meta)</div>
+    <div class="step-pill" data-step="5"><span class="pill-num">05</span>TikTok</div>
+    <div class="step-pill" data-step="6"><span class="pill-num">06</span>All done</div>
+    <div class="step-pill" data-step="7"><span class="pill-num">07</span>Settings &amp; control</div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-corner">CONNECTION GUIDE &middot; v1</div>
+
+    <!-- STEP 1: TRIGGER -->
+    <div class="step show" id="step1">
+      <div class="s1-grid">
+        <div class="s1-left">
+          <div class="section-eyebrow">Step 1 &middot; Trigger point</div>
+          <div class="section-title">One click. <em>All your platforms.</em></div>
+          <div class="section-desc">From the welcome screen or Settings, the brand sees three platform mini-cards plus a single &quot;Connect all&quot; master button. Clicking it opens the Connection Guide &mdash; one continuous ceremony that feels like a single act.</div>
+
+          <div class="s1-list">
+            <div class="s1-list-item"><div class="s1-check">&#10003;</div><div><strong>Auto-detected.</strong> Shopify URL pre-filled from Brand Assimilation. No typing.</div></div>
+            <div class="s1-list-item"><div class="s1-check">&#10003;</div><div><strong>One click to start.</strong> Guide handles three handshakes in sequence.</div></div>
+            <div class="s1-list-item"><div class="s1-check">&#10003;</div><div><strong>Approval Mode by default.</strong> You approve every post for the first 7 days.</div></div>
+          </div>
+
+          <button class="btn-primary" onclick="goStep(2)">
+            Connect all
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <button class="btn-secondary" onclick="goStep(7)">Or do it later in Settings</button>
+        </div>
+
+        <div class="s1-cards">
+          <div class="s1-cards-title">Connect your platforms</div>
+          <div class="s1-card">
+            <div class="s1-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#95BF47" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 8v9" stroke="#95BF47" stroke-width="1.2"/><path d="M9 9.5h6" stroke="#95BF47" stroke-width="1.2"/></svg>
+            </div>
+            <div class="s1-card-info">
+              <div class="s1-card-name">Shopify</div>
+              <div class="s1-card-status">Detected &middot; glosslab.myshopify.com</div>
+            </div>
+            <div class="s1-card-dot"></div>
+          </div>
+          <div class="s1-card">
+            <div class="s1-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igG1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#igG1)" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="url(#igG1)" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="url(#igG1)"/></svg>
+            </div>
+            <div class="s1-card-info">
+              <div class="s1-card-name">Instagram</div>
+              <div class="s1-card-status">Not connected</div>
+            </div>
+            <div class="s1-card-dot"></div>
+          </div>
+          <div class="s1-card">
+            <div class="s1-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#1F1F1F"/></svg>
+            </div>
+            <div class="s1-card-info">
+              <div class="s1-card-name">TikTok</div>
+              <div class="s1-card-status">Not connected</div>
+            </div>
+            <div class="s1-card-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: GUIDE OPENS -->
+    <div class="step" id="step2">
+      <div class="section-eyebrow" style="text-align:center">Step 2 &middot; Guide popup opens</div>
+      <div class="section-title" style="text-align:center">A Caast-owned popup. <em>You stay oriented.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 24px">A single popup window &mdash; caast.ai/connect &mdash; drives the user through three sequential consent screens. Caast&#39;s progress bar is always visible at the top.</div>
+
+      <div class="popup-frame">
+        <div class="popup-titlebar">
+          <div class="popup-traffic"><div class="popup-dot r"></div><div class="popup-dot y"></div><div class="popup-dot g"></div></div>
+          <div class="popup-url">caast.ai/connect?platforms=shopify,instagram,tiktok</div>
+        </div>
+        <div class="popup-body">
+
+          <div class="popup-progress">
+            <div class="pp-step active">
+              <div class="pp-step-num">1</div>
+              <div class="pp-step-label">Shopify</div>
+              <div class="pp-line"></div>
+            </div>
+            <div class="pp-step">
+              <div class="pp-step-num">2</div>
+              <div class="pp-step-label">Instagram</div>
+              <div class="pp-line"></div>
+            </div>
+            <div class="pp-step">
+              <div class="pp-step-num">3</div>
+              <div class="pp-step-label">TikTok</div>
+            </div>
+          </div>
+
+          <div class="popup-eyebrow">Connecting GlossLab</div>
+          <div class="popup-title">Here&#39;s what we&#39;ll ask for</div>
+          <div class="popup-desc">Each provider will show its own consent screen. We&#39;re telling you upfront so there are no surprises.</div>
+
+          <div class="popup-platforms">
+            <div class="pp-plat">
+              <div class="pp-plat-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#95BF47" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="pp-plat-info">
+                <div class="pp-plat-name">Shopify &middot; glosslab.myshopify.com <span class="pp-plat-tag">READ</span></div>
+                <div class="pp-plat-perm">Read products, orders, inventory &middot; attribution &amp; auto-pause for low stock</div>
+              </div>
+            </div>
+            <div class="pp-plat">
+              <div class="pp-plat-icon">
+                <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igG2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#igG2)" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="url(#igG2)" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="url(#igG2)"/></svg>
+              </div>
+              <div class="pp-plat-info">
+                <div class="pp-plat-name">Instagram (Business or Creator) <span class="pp-plat-tag">READ + POST</span></div>
+                <div class="pp-plat-perm">Read insights &middot; publish DOL content with your approval</div>
+              </div>
+            </div>
+            <div class="pp-plat">
+              <div class="pp-plat-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#1F1F1F"/></svg>
+              </div>
+              <div class="pp-plat-info">
+                <div class="pp-plat-name">TikTok <span class="pp-plat-tag">READ + POST</span></div>
+                <div class="pp-plat-perm">Read engagement &middot; publish video content with your approval</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="popup-trust">
+            <div class="popup-trust-icon">i</div>
+            <div class="popup-trust-text"><strong>Approval Mode is on by default.</strong> For your first 7 days, you approve every post before it goes live. You stay in control while the fleet warms up.</div>
+          </div>
+
+          <button class="popup-cta" onclick="goStep(3)">
+            Start with Shopify
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: SHOPIFY -->
+    <div class="step" id="step3">
+      <div class="section-eyebrow" style="text-align:center">Step 3 &middot; Shopify consent</div>
+      <div class="section-title" style="text-align:center">Provider screen #1. <em>Familiar. Trusted.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 20px">Shopify shows its own consent UI. The Guide catches the redirect server-side, exchanges the code for a token, registers webhooks, then redirects to Instagram. Shopify is read-only &mdash; we don&#39;t need to write to your store.</div>
+
+      <div class="provider-frame">
+        <div class="shopify-bar">
+          <div class="shopify-bag">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="shopify-logo">Shopify</div>
+          <div class="shopify-store-info">glosslab.myshopify.com</div>
+        </div>
+        <div class="provider-body">
+
+          <div class="shop-card">
+            <div class="shop-logo">C</div>
+            <div>
+              <div class="shop-name">Caast &mdash; Influence Network</div>
+              <div class="shop-url">caast.ai &middot; Verified developer</div>
+            </div>
+          </div>
+
+          <div class="provider-q">Caast is requesting access to your store</div>
+
+          <div class="perm-list">
+            <div class="perm-title">Permissions requested</div>
+            <div class="perm-item">
+              <span class="perm-bullet">&#10003;</span>
+              <div>
+                <div>Read products, orders, customers, inventory<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail">For brand assimilation, attribution tracking, and out-of-stock auto-pause</div>
+              </div>
+            </div>
+            <div class="perm-item">
+              <span class="perm-bullet">&#10003;</span>
+              <div>
+                <div>Read store analytics<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail">For revenue attribution and ROAS calculations</div>
+              </div>
+            </div>
+            <div class="perm-item">
+              <span class="perm-bullet">&#10003;</span>
+              <div>
+                <div>Webhooks for order and inventory events<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail">Real-time signal updates without manual sync</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="provider-fineprint">By installing, you agree to share these data points with Caast as described in their <a href="#">privacy policy</a>. You can revoke access from your Shopify admin at any time.</div>
+
+          <div class="provider-actions">
+            <button class="provider-cancel">Cancel</button>
+            <button class="provider-install" onclick="goStep(4)">Install app</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: META / INSTAGRAM -->
+    <div class="step" id="step4">
+      <div class="section-eyebrow" style="text-align:center">Step 4 &middot; Instagram consent (via Meta)</div>
+      <div class="section-title" style="text-align:center">Provider screen #2. <em>Meta&#39;s flow.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 18px">Caast uses Facebook Login for Business &mdash; a single named configuration in our Meta App dashboard that bundles all scopes into one consent screen. Instagram must be a Business or Creator account.</div>
+
+      <div class="bridge">
+        <div class="bridge-done">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Shopify connected
+        </div>
+        <div class="bridge-arrow">&rarr;</div>
+        <div class="bridge-now">Now: Instagram</div>
+      </div>
+
+      <div class="provider-frame">
+        <div class="meta-bar">
+          <div class="meta-logo">Meta</div>
+          <div class="meta-divider"></div>
+          <div class="meta-flow-name">Facebook Login for Business</div>
+          <div class="meta-info">@glosslab</div>
+        </div>
+        <div class="provider-body">
+
+          <div class="meta-card-account">
+            <div class="meta-account-av">RG</div>
+            <div>
+              <div class="meta-account-name">Rachel Glass</div>
+              <div class="meta-account-handle">Managing GlossLab Page &middot; @glosslab on Instagram</div>
+            </div>
+          </div>
+
+          <div class="meta-q"><strong>Caast &mdash; Influence Network</strong> is requesting access to your Instagram Business account</div>
+
+          <div class="meta-perm-list">
+            <div class="perm-title" style="color:#65676B">Permissions requested</div>
+            <div class="meta-perm-item">
+              <span class="meta-perm-bullet">&#10003;</span>
+              <div>
+                <div>Read your Instagram Business profile and bio<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail" style="color:#65676B">instagram_basic &mdash; basic profile info and account type</div>
+              </div>
+            </div>
+            <div class="meta-perm-item">
+              <span class="meta-perm-bullet">&#10003;</span>
+              <div>
+                <div>Read insights and engagement metrics<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail" style="color:#65676B">instagram_manage_insights &mdash; followers, reach, engagement, saves</div>
+              </div>
+            </div>
+            <div class="meta-perm-item">
+              <span class="meta-perm-bullet">&#10003;</span>
+              <div>
+                <div>Publish content on your behalf<span class="perm-tag-write">POST</span></div>
+                <div class="perm-detail" style="color:#65676B">instagram_content_publish &mdash; only after your approval (Approval Mode)</div>
+              </div>
+            </div>
+            <div class="meta-perm-item">
+              <span class="meta-perm-bullet">&#10003;</span>
+              <div>
+                <div>Access your linked Facebook Page<span class="perm-tag-read">READ</span></div>
+                <div class="perm-detail" style="color:#65676B">pages_show_list, business_management &mdash; required for Instagram publishing</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta-control-card">
+            <div class="meta-control-icon">i</div>
+            <div class="meta-control-text"><strong>You stay in control.</strong> Caast won&#39;t post anything without your approval &mdash; Approval Mode is recommended for your first 7 days. You can revoke this access anytime in Facebook Settings.</div>
+          </div>
+
+          <div class="meta-fineprint">By continuing, you allow Caast to receive and use the information listed above. Manage this access in <a href="#">Facebook Settings &rsaquo; Business Integrations</a>.</div>
+
+          <div class="provider-actions">
+            <button class="meta-cancel">Cancel</button>
+            <button class="meta-continue" onclick="goStep(5)">Continue as Rachel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: TIKTOK -->
+    <div class="step" id="step5">
+      <div class="section-eyebrow" style="text-align:center">Step 5 &middot; TikTok consent</div>
+      <div class="section-title" style="text-align:center">Provider screen #3. <em>TikTok Login Kit.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 18px">TikTok&#39;s native authorization screen using Login Kit. Content posting scopes (video.upload, video.publish) require TikTok app review &mdash; submit early, in parallel with development, since approval can take 5&#8211;10 business days.</div>
+
+      <div class="bridge">
+        <div class="bridge-done">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Shopify &amp; Instagram connected
+        </div>
+        <div class="bridge-arrow">&rarr;</div>
+        <div class="bridge-now">Now: TikTok</div>
+      </div>
+
+      <div class="provider-frame" style="border-color:#000">
+        <div class="tiktok-bar">
+          <div class="tiktok-logo-wrap">
+            <div class="tiktok-icon-bg">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#000"/></svg>
+            </div>
+            <div class="tiktok-logo-text">TikTok</div>
+          </div>
+          <div class="tiktok-info">@glosslab.official</div>
+        </div>
+        <div class="tiktok-body">
+
+          <div class="tiktok-account-card">
+            <div class="tiktok-account-av">GL</div>
+            <div>
+              <div class="tiktok-account-name">@glosslab.official</div>
+              <div class="tiktok-account-handle">Creator account &middot; 1,420 followers</div>
+            </div>
+          </div>
+
+          <div class="tiktok-q"><span style="color:#FE2C55">Caast &mdash; Influence Network</span> wants to access your TikTok account</div>
+
+          <div class="tiktok-perm-list">
+            <div class="tiktok-perm-title">Permissions requested</div>
+            <div class="tiktok-perm-item">
+              <span class="tiktok-perm-bullet">&#10003;</span>
+              <div>
+                <div>Read your basic profile<span class="tiktok-perm-tag-read">READ</span></div>
+                <div class="tiktok-perm-detail">user.info.basic, user.info.profile &mdash; display name, bio, avatar</div>
+              </div>
+            </div>
+            <div class="tiktok-perm-item">
+              <span class="tiktok-perm-bullet">&#10003;</span>
+              <div>
+                <div>Read profile statistics and video engagement<span class="tiktok-perm-tag-read">READ</span></div>
+                <div class="tiktok-perm-detail">user.info.stats, video.list &mdash; followers, likes, video views, comments, shares</div>
+              </div>
+            </div>
+            <div class="tiktok-perm-item">
+              <span class="tiktok-perm-bullet">&#10003;</span>
+              <div>
+                <div>Upload and publish videos to your account<span class="tiktok-perm-tag-write">POST</span></div>
+                <div class="tiktok-perm-detail">video.upload, video.publish &mdash; only after your approval (Approval Mode)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tiktok-control-card">
+            <div class="tiktok-control-icon">i</div>
+            <div class="tiktok-control-text"><strong>You stay in control.</strong> Approval Mode is on for your first 7 days &mdash; nothing publishes without your tap. Revoke access anytime in <a href="#" style="color:#25F4EE">Settings &rsaquo; Apps</a>.</div>
+          </div>
+
+          <div class="tiktok-fineprint">By authorizing, you allow Caast to access the data and capabilities listed above for as long as you remain connected. Tokens auto-refresh every 24 hours.</div>
+
+          <div class="provider-actions">
+            <button class="tiktok-cancel">Cancel</button>
+            <button class="tiktok-authorize" onclick="goStep(6)">Authorize</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: ALL DONE -->
+    <div class="step" id="step6">
+      <div class="section-eyebrow" style="text-align:center">Step 6 &middot; Completion</div>
+      <div class="section-title" style="text-align:center">All three connected. <em>~45 seconds total.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 24px">After the third callback, the Guide sends a postMessage to the parent window, closes the popup, and the dashboard updates each card to &check; Connected in real-time.</div>
+
+      <div class="popup-frame">
+        <div class="popup-titlebar">
+          <div class="popup-traffic"><div class="popup-dot r"></div><div class="popup-dot y"></div><div class="popup-dot g"></div></div>
+          <div class="popup-url">caast.ai/connect &mdash; closing in 2s</div>
+        </div>
+        <div class="popup-success-large">
+
+          <div class="popup-progress">
+            <div class="pp-step done">
+              <div class="pp-step-num">&#10003;</div>
+              <div class="pp-step-label">Shopify</div>
+              <div class="pp-line filled"></div>
+            </div>
+            <div class="pp-step done">
+              <div class="pp-step-num">&#10003;</div>
+              <div class="pp-step-label">Instagram</div>
+              <div class="pp-line filled"></div>
+            </div>
+            <div class="pp-step done">
+              <div class="pp-step-num">&#10003;</div>
+              <div class="pp-step-label">TikTok</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin:18px 0 6px">
+            <div class="transit-success">&#10003;</div>
+            <div class="popup-eyebrow" style="text-align:center;color:#5DCAA5">Network is live</div>
+            <div class="popup-title">You&#39;re all connected</div>
+          </div>
+
+          <div class="success-row">
+            <div class="success-platform">
+              <div class="sp-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#95BF47" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+              <div class="sp-info"><div class="sp-name">Shopify &middot; GlossLab Store</div><div class="sp-detail">42 products &middot; webhooks active</div></div>
+              <div class="sp-check">&#10003;</div>
+            </div>
+            <div class="success-platform">
+              <div class="sp-icon"><svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igG3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#igG3)" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="url(#igG3)" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="url(#igG3)"/></svg></div>
+              <div class="sp-info"><div class="sp-name">@glosslab &middot; Business account</div><div class="sp-detail">2,840 followers &middot; ready to publish</div></div>
+              <div class="sp-check">&#10003;</div>
+            </div>
+            <div class="success-platform">
+              <div class="sp-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#1F1F1F"/></svg></div>
+              <div class="sp-info"><div class="sp-name">@glosslab.official &middot; Creator</div><div class="sp-detail">Token valid 24h &middot; auto-refresh on</div></div>
+              <div class="sp-check">&#10003;</div>
+            </div>
+          </div>
+
+          <div class="popup-summary-card">
+            <div class="psc-icon">&#9203;</div>
+            <div class="psc-text"><strong>Approval Mode is active.</strong> The fleet starts producing now. You&#39;ll get a notification when the first posts are ready for your approval &mdash; recommended for your first 7 days while the fleet learns your brand voice.</div>
+          </div>
+
+          <button class="popup-cta" onclick="goStep(7)">
+            Open Settings &amp; control posting
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7: SETTINGS WITH POSTING CONTROL -->
+    <div class="step" id="step7">
+      <div class="section-eyebrow" style="text-align:center">Step 7 &middot; Settings (with merged posting control)</div>
+      <div class="section-title" style="text-align:center">Connections, health, <em>and DOL post approval.</em></div>
+      <div class="section-desc" style="text-align:center;margin:0 auto 24px">All connections plus the DOL fleet&#39;s posting control live in Settings. The brand toggles between Approval Mode (review every DOL post before it goes live) and Auto-publish (fleet runs autonomously). Switching to Auto-publish cancels Approval Mode immediately.</div>
+
+      <div class="settings-grid">
+
+        <div class="settings-section">
+          <div class="set-sec-head">
+            <div class="set-sec-lbl">Connected platforms</div>
+            <div class="set-sec-action" onclick="goStep(2)">+ Reconnect all</div>
+          </div>
+
+          <div class="set-platforms-list">
+            <div class="set-platform-row connected">
+              <div class="set-pl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M15.5 3.5L14.5 2 13 3l-1-1.5L10.5 3 9 1.5 7.5 3.5 6 3v13.5l6 4 6-4V3l-2.5.5z" stroke="#95BF47" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+              <div class="set-pl-info">
+                <div class="set-pl-name">Shopify &middot; glosslab.myshopify.com</div>
+                <div class="set-pl-status"><div class="set-pl-dot"></div>Read access &middot; 42 products synced</div>
+              </div>
+              <div class="set-pl-meta">Linked Mar 1<br/>Token: permanent</div>
+              <div class="set-pl-action disconnect">Disconnect</div>
+            </div>
+
+            <div class="set-platform-row connected">
+              <div class="set-pl-icon"><svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igG4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#igG4)" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="url(#igG4)" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="url(#igG4)"/></svg></div>
+              <div class="set-pl-info">
+                <div class="set-pl-name">Instagram &middot; @glosslab</div>
+                <div class="set-pl-status"><div class="set-pl-dot"></div>Read + post &middot; Business account</div>
+              </div>
+              <div class="set-pl-meta">Linked Mar 1<br/>Renews May 1</div>
+              <div class="set-pl-action disconnect">Disconnect</div>
+            </div>
+
+            <div class="set-platform-row connected">
+              <div class="set-pl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.86a8.16 8.16 0 0 0 4.77 1.52V6.93a4.85 4.85 0 0 1-1.84-.24z" fill="#1F1F1F"/></svg></div>
+              <div class="set-pl-info">
+                <div class="set-pl-name">TikTok &middot; @glosslab.official</div>
+                <div class="set-pl-status"><div class="set-pl-dot"></div>Read + post &middot; auto-refreshing</div>
+              </div>
+              <div class="set-pl-meta">Linked Mar 1<br/>Refreshed 6h ago</div>
+              <div class="set-pl-action disconnect">Disconnect</div>
+            </div>
+          </div>
+
+          <div class="failure-card">
+            <div class="failure-icon">!</div>
+            <div class="failure-content">
+              <div class="failure-title">Failure path &middot; example</div>
+              <div class="failure-desc">If a token expires or a permission is revoked from the platform side, this row turns amber. The brand sees what happened and a one-tap reconnect that re-runs that single platform&#39;s OAuth without disturbing the others.</div>
+              <div class="failure-cta">Reconnect Instagram &rarr;</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="set-sec-head">
+            <div class="set-sec-lbl">DOL post approval</div>
+          </div>
+
+          <div class="set-approval">
+
+            <div class="seg-control" id="segControl">
+              <button class="seg-btn active" id="segApproval" onclick="setMode('approval')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Approval Mode
+              </button>
+              <button class="seg-btn" id="segAuto" onclick="setMode('auto')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Auto-publish
+              </button>
+            </div>
+
+            <div class="approval-rec" id="approvalRec">
+              <span class="approval-rec-icon">&#9728;</span>
+              <div><strong>Approval Mode is recommended for your first 7 days</strong> while the fleet learns your brand voice. Switch to Auto-publish anytime &mdash; doing so cancels Approval Mode and the fleet will publish without further review.</div>
+            </div>
+
+            <div class="pending-block" id="pendingBlock">
+              <div class="pending-head">
+                <div class="pending-label">Pending approval</div>
+                <div class="pending-count">3 ready</div>
+              </div>
+
+              <div class="pending-post">
+                <div class="pp-thumb">CLEAN<br/>GEL</div>
+                <div class="pp-info">
+                  <div class="pp-dol">elara.skinscience <span class="pp-plat-tag2">IG</span></div>
+                  <div class="pp-cap">The clean gel movement isn&#39;t a fad. The science says it&#39;s the future of nail care.</div>
+                </div>
+                <div class="pp-actions">
+                  <button class="pp-approve">Approve</button>
+                  <button class="pp-edit">Edit</button>
+                </div>
+              </div>
+              <div class="pending-post">
+                <div class="pp-thumb t2">VS</div>
+                <div class="pp-info">
+                  <div class="pp-dol">elara.skinscience <span class="pp-plat-tag2">IG</span></div>
+                  <div class="pp-cap">Honest comparison: GlossLab vs. Olive &amp; June at-home gel kit, ingredient by ingredient.</div>
+                </div>
+                <div class="pp-actions">
+                  <button class="pp-approve">Approve</button>
+                  <button class="pp-edit">Edit</button>
+                </div>
+              </div>
+              <div class="pending-post">
+                <div class="pp-thumb t3">SPRING<br/>NAILS</div>
+                <div class="pp-info">
+                  <div class="pp-dol">elara.skinscience <span class="pp-plat-tag2">PIN</span></div>
+                  <div class="pp-cap">Spring nails start now. Pin this guide and grab 15% off the prep essentials with SPRING15.</div>
+                </div>
+                <div class="pp-actions">
+                  <button class="pp-approve">Approve</button>
+                  <button class="pp-edit">Edit</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="autopublish-state" id="autoState">
+              <div class="aps-icon">&#9889;</div>
+              <div class="aps-title">Fleet is publishing autonomously</div>
+              <div class="aps-desc">Posts go live without approval. You&#39;ll still see everything the fleet publishes in your Content Plan. Switch back to Approval Mode anytime.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="set-sec-head">
+            <div class="set-sec-lbl">Connection health</div>
+          </div>
+          <div class="health-grid">
+            <div class="health-card">
+              <div class="health-label">Tokens active</div>
+              <div class="health-value">3 / 3</div>
+              <div class="health-sub">All systems go</div>
+            </div>
+            <div class="health-card">
+              <div class="health-label">Webhooks active</div>
+              <div class="health-value">12 / 12</div>
+              <div class="health-sub">Real-time updates on</div>
+            </div>
+            <div class="health-card">
+              <div class="health-label">Last sync</div>
+              <div class="health-value" style="color:#81226B">2 min ago</div>
+              <div class="health-sub">Continuous</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="proto-note">Click step pills above to navigate &middot; Toggle Approval Mode / Auto-publish in Step 7 to see both states</div>
+
+</div>
+
+<script>
+function goStep(n){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('show')});
+  document.getElementById('step'+n).classList.add('show');
+  document.querySelectorAll('.step-pill').forEach(function(p){
+    p.classList.toggle('active', p.dataset.step === String(n));
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.step-pill').forEach(function(p){
+  p.addEventListener('click', function(){ goStep(this.dataset.step); });
+});
+
+function setMode(mode){
+  var segApproval = document.getElementById('segApproval');
+  var segAuto = document.getElementById('segAuto');
+  var pending = document.getElementById('pendingBlock');
+  var auto = document.getElementById('autoState');
+  var rec = document.getElementById('approvalRec');
+  if(mode === 'approval'){
+    segApproval.classList.add('active');
+    segAuto.classList.remove('active');
+    pending.style.display = 'block';
+    auto.classList.remove('show');
+    rec.style.display = 'flex';
+  } else {
+    segApproval.classList.remove('active');
+    segAuto.classList.add('active');
+    pending.style.display = 'none';
+    auto.classList.add('show');
+    rec.style.display = 'none';
+  }
+}
+</script>
+
+</body>
+</html>
