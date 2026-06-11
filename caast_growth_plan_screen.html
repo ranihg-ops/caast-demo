@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caast — Your growth plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ Base ============ */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#FFFFFF; }
+  body {
+    font-family:'Poppins',sans-serif;
+    color:#1D1D1F;
+    display:flex; justify-content:center;
+    min-height:100vh;
+    padding:18px 0 40px;
+    -webkit-font-smoothing:antialiased;
+  }
+  button { font-family:inherit; cursor:pointer; }
+  :focus-visible { outline:2px solid #F43460; outline-offset:2px; border-radius:4px; }
+
+  /* ============ Page wrapper ============ */
+  .page {
+    position:relative;
+    max-width:680px; width:100%;
+    padding:32px 24px 28px;
+    border-radius:20px;
+    background:#FFFFFF;
+    display:flex; flex-direction:column; align-items:center;
+    overflow:hidden;
+  }
+
+  /* ============ Header stack ============ */
+  .hdr { display:flex; flex-direction:column; align-items:center; position:relative; width:100%; }
+  .logo-big { font-size:32px; font-weight:600; color:#F43460; letter-spacing:-.5px; }
+  .logo-big span { color:#1D1D1F; }
+  .tagline { margin-top:6px; font-size:13px; color:#EC274F; }
+  .pdots { margin-top:20px; display:flex; gap:7px; align-items:center; }
+  .pdot { width:6px; height:6px; border-radius:50%; background:#EC274F; opacity:.35; transition:all .3s; }
+  .pdot.active { width:18px; border-radius:3px; opacity:1; }
+  .hdr-gap { height:28px; }
+
+  /* ============ Page header row ============ */
+  .phead { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .logo-sm { font-size:26px; font-weight:600; color:#F43460; letter-spacing:-.5px; white-space:nowrap; }
+  .logo-sm span { color:#1D1D1F; }
+  .ptitle { flex:1; text-align:center; font-size:16px; font-weight:500; color:#81226B; }
+  .ptitle em { font-style:normal; color:#F43460; }
+  .bpill {
+    background:transparent; border:1px solid #D990B3; color:#81226B;
+    font-size:11px; font-weight:500; padding:5px 12px; border-radius:100px; white-space:nowrap;
+  }
+  .edit-hint { text-align:center; font-size:9px; color:#1D1D1F; margin-bottom:16px; }
+  .edit-hint .du { border-bottom:1px dotted #D990B3; padding-bottom:1px; }
+
+  /* ============ Card chrome ============ */
+  .card {
+    background:#FCF5F8; border:1px solid #EEDCE4; border-radius:16px;
+    padding:18px 18px 16px; position:relative; overflow:visible;
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    margin-bottom:12px;
+  }
+  .card:hover {
+    transform:translateY(-2px);
+    box-shadow:0 12px 32px -8px rgba(244,52,96,.22);
+    border-color:#F43460;
+  }
+  .clabel { font-size:10px; font-weight:500; color:#81226B; letter-spacing:.5px; }
+  .dash-sep { border-top:1px dashed #EC274F; margin-top:12px; padding-top:10px; }
+
+  /* ============ Editable values ============ */
+  .ed {
+    border-bottom:1px dotted #D990B3; padding-bottom:1px;
+    cursor:text; position:relative; transition:border-color .2s ease;
+    white-space:nowrap;
+  }
+  .ed:hover { border-bottom-color:#F43460; }
+  .ed:hover::after {
+    content:"✎"; position:absolute; top:-.55em; right:-1em;
+    font-size:.5em; color:#F43460; opacity:.85;
+  }
+  .ed.edited::before {
+    content:""; position:absolute; top:-2px; right:-7px;
+    width:5px; height:5px; border-radius:50%; background:#81226B;
+  }
+  .ed-input {
+    font-family:'Poppins',sans-serif; border:none; outline:none;
+    background:rgba(255,255,255,.85); border-radius:6px;
+    border-bottom:1.5px solid #F43460; padding:0 4px; text-align:center;
+    color:inherit; font-size:inherit; font-weight:inherit; letter-spacing:inherit;
+  }
+
+  /* ============ Hero — goal ============ */
+  .goal-row { display:flex; align-items:baseline; justify-content:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .goal-from { font-size:16px; font-weight:600; color:#1D1D1F; letter-spacing:-.3px; }
+  .goal-arrow { font-size:18px; color:#F43460; transform:translateY(-1px); }
+  .goal-to { font-size:40px; font-weight:600; color:#1D1D1F; letter-spacing:-1.5px; line-height:1; }
+  .goal-to.morphing { filter:blur(2px); }
+  .goal-mo { font-size:11px; color:#1D1D1F; }
+  .goal-sub { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; }
+  .badge { font-size:8px; font-weight:500; padding:3px 7px; border-radius:5px; }
+  .badge-green { background:rgba(93,202,165,.15); color:#5DCAA5; }
+  .badge-plum { background:rgba(129,34,107,.10); color:#81226B; }
+  .goal-sub .txt { font-size:9.5px; color:#1D1D1F; }
+  .goal-formula { font-size:8.5px; font-weight:500; color:#F43460; line-height:1.4; text-align:center; }
+
+  /* ============ Targets — 3 stat cards ============ */
+  .tgrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px; }
+  .tcard {
+    background:#FCF5F8; border:1px solid #EEDCE4; border-radius:12px;
+    padding:14px 10px 12px; text-align:center;
+    display:flex; flex-direction:column; align-items:center; position:relative;
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .tcard:hover {
+    transform:translateY(-1px);
+    box-shadow:0 8px 20px -6px rgba(244,52,96,.18);
+    border-color:#F43460;
+  }
+  .tcard .lbl { font-size:9px; font-weight:500; color:#81226B; letter-spacing:.3px; }
+  .tcard .val { font-size:24px; font-weight:600; color:#1D1D1F; letter-spacing:-.3px; margin-top:8px; line-height:1.15; }
+  .tcard .today { font-size:8.5px; color:#1D1D1F; margin-top:5px; }
+  .info {
+    margin-top:8px; width:15px; height:15px; border-radius:50%;
+    border:1px solid #D990B3; background:transparent; color:#81226B;
+    font-size:9px; line-height:13px; font-weight:500;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:all .2s ease;
+  }
+  .info:hover, .info.open { border-color:#F43460; color:#F43460; }
+  .tip {
+    position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) translateY(4px);
+    width:215px; background:#fff; border:1px solid #EEDCE4; border-radius:10px;
+    padding:10px 12px; text-align:left; z-index:30;
+    box-shadow:0 10px 26px -8px rgba(244,52,96,.25);
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+  }
+  .tip.show { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+  .tip .bm { font-size:9px; font-weight:500; color:#F43460; line-height:1.5; }
+  .tip .src { font-size:8px; color:#1D1D1F; margin-top:5px; line-height:1.4; }
+
+  /* ============ Budget ============ */
+  .bud-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .bud-num-row { display:flex; align-items:baseline; justify-content:center; gap:6px; margin-top:14px; }
+  .bud-num { font-size:28px; font-weight:600; color:#1D1D1F; letter-spacing:-.8px; }
+  .bud-mo { font-size:11px; color:#1D1D1F; }
+  .slider-wrap { margin:14px 4px 4px; }
+  input[type="range"].bslider {
+    -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:4px;
+    background:linear-gradient(90deg,#F43460,#EC274F) 0/var(--fill,22%) 100% no-repeat, rgba(244,52,96,.08);
+    outline:none;
+  }
+  input[type="range"].bslider::-webkit-slider-thumb {
+    -webkit-appearance:none; appearance:none;
+    width:18px; height:18px; border-radius:50%;
+    background:#fff; border:2px solid #F43460;
+    box-shadow:0 2px 8px -2px rgba(244,52,96,.5);
+    cursor:grab; transition:transform .15s ease;
+  }
+  input[type="range"].bslider::-webkit-slider-thumb:hover { transform:scale(1.12); }
+  input[type="range"].bslider::-moz-range-thumb {
+    width:18px; height:18px; border-radius:50%;
+    background:#fff; border:2px solid #F43460;
+    box-shadow:0 2px 8px -2px rgba(244,52,96,.5); cursor:grab;
+  }
+  .rails { display:flex; justify-content:space-between; font-size:8px; color:#1D1D1F; margin-top:5px; }
+  .bud-cap { font-size:9px; color:#1D1D1F; line-height:1.6; text-align:center; margin-top:10px; }
+
+  .split-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .mtabs { display:flex; gap:2px; }
+  .mtab {
+    background:none; border:none; font-size:9px; font-weight:500; color:#1D1D1F;
+    padding:4px 9px 6px; position:relative; transition:color .25s ease;
+  }
+  .mtab[data-active="true"] { color:#81226B; background:linear-gradient(180deg,transparent,rgba(244,52,96,.06)); }
+  .mtab[data-active="true"]::after {
+    content:""; position:absolute; bottom:0; left:14%; right:14%; height:2px;
+    background:linear-gradient(90deg,#F43460,#EC274F); border-radius:2px;
+  }
+  .sbar { display:flex; height:14px; border-radius:7px; overflow:hidden; background:rgba(244,52,96,.08); }
+  .sbar .seg { height:100%; transition:width .9s cubic-bezier(.4,0,.2,1); }
+  .seg.p { background:linear-gradient(90deg,#F43460,#EC274F); }
+  .seg.r { background:#81226B; }
+  .seg.b { background:#E7A6C9; }
+  .legend { margin-top:10px; }
+  .lrow { display:flex; align-items:center; gap:8px; padding:7px 0; }
+  .lrow + .lrow { border-top:1px dashed #EC274F; }
+  .ldot { width:7px; height:7px; border-radius:50%; flex:none; }
+  .ldot.p { background:#F43460; } .ldot.r { background:#81226B; } .ldot.b { background:#E7A6C9; }
+  .lname { font-size:10px; font-weight:500; color:#81226B; white-space:nowrap; }
+  .ldesc { flex:1; font-size:8.5px; color:#1D1D1F; line-height:1.45; }
+  .lpct { font-size:12px; font-weight:600; color:#1D1D1F; }
+  .split-warn { display:none; font-size:8.5px; font-weight:500; color:#E24B4A; margin-top:7px; text-align:right; }
+  .split-warn.show { display:block; }
+
+  /* ============ Audiences ============ */
+  .arow { padding:9px 0; }
+  .arow + .arow { border-top:1px dashed #EC274F; }
+  .arow-top { display:flex; align-items:center; gap:8px; cursor:pointer; background:none; border:none; width:100%; text-align:left; padding:0; }
+  .aname { font-size:10px; font-weight:500; color:#81226B; }
+  .awhy { flex:1; text-align:right; font-size:9px; font-weight:500; color:#F43460; }
+  .chev { width:8px; height:8px; border-right:1.5px solid #1D1D1F; border-bottom:1.5px solid #1D1D1F; transform:rotate(45deg); transition:transform .3s ease; flex:none; margin-left:2px; }
+  .arow.open .chev { transform:rotate(225deg) translate(-2px,-2px); }
+  .adef { max-height:0; overflow:hidden; transition:max-height .35s ease, margin .35s ease; font-size:9px; color:#1D1D1F; line-height:1.6; }
+  .arow.open .adef { max-height:80px; margin-top:7px; }
+
+  /* ============ Plan tracks ============ */
+  .trow { padding:11px 0; }
+  .trow + .trow { border-top:1px dashed #EC274F; }
+  .trow-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .tname { font-size:10px; font-weight:500; color:#81226B; }
+  .badge-pink { background:rgba(244,52,96,.10); color:#F43460; }
+  .badge-gray { background:rgba(109,106,101,.12); color:#1D1D1F; }
+  .tfield { display:flex; gap:7px; margin-top:7px; align-items:baseline; }
+  .tfield .fl { font-size:8px; color:#1D1D1F; width:48px; flex:none; letter-spacing:.3px; }
+  .tfield .fv { font-size:9.5px; font-weight:500; color:#1D1D1F; line-height:1.55; white-space:normal; }
+  .tfield .fv2 { font-weight:400; font-size:9px; }
+  .sera-head { display:flex; align-items:center; gap:9px; }
+  .sera-body { transition:opacity .35s ease; }
+  .sera-off .sera-body, .sera-off .sera-meta { opacity:.5; }
+  .avatar {
+    width:24px; height:24px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg,#81226B,#F43460);
+    color:#fff; font-size:9.5px; font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sera-meta { flex:1; transition:opacity .35s ease; }
+  .toggle {
+    width:36px; height:20px; border-radius:100px; border:1px solid #EEDCE4;
+    background:#fff; position:relative; flex:none; transition:background .3s ease, border-color .3s ease;
+    padding:0;
+  }
+  .toggle .knob {
+    position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%;
+    background:#D990B3; transition:left .3s ease, background .3s ease;
+  }
+  .toggle[aria-checked="true"] { background:linear-gradient(90deg,#F43460,#EC274F); border-color:#F43460; }
+  .toggle[aria-checked="true"] .knob { left:18px; background:#fff; }
+  .sera-note { display:none; font-size:8.5px; color:#5DCAA5; font-weight:500; margin-top:6px; }
+  .sera-on .sera-note { display:block; }
+  .plan-cap { font-size:8.5px; color:#1D1D1F; line-height:1.6; }
+
+  /* ============ Shopify edge ============ */
+  .edge-intro { font-size:9px; color:#1D1D1F; line-height:1.6; margin-top:6px; }
+  .edge-intro b { font-weight:500; color:#81226B; }
+  .erow { display:flex; gap:10px; padding:8px 0; align-items:flex-start; }
+  .erow + .erow { border-top:1px dashed #EC274F; }
+  .eicon { flex:none; width:16px; height:16px; color:#F43460; margin-top:1px; }
+  .eicon svg { width:100%; height:100%; }
+  .ename { font-size:10px; font-weight:500; color:#81226B; width:64px; flex:none; margin-top:1px; }
+  .etxt { flex:1; font-size:9px; color:#1D1D1F; line-height:1.55; }
+  .edge-cap { font-size:9px; font-weight:500; color:#F43460; line-height:1.5; }
+
+  /* ============ Operating rules (hidden) ============ */
+  .rules-head {
+    display:flex; align-items:center; gap:9px; width:100%;
+    background:none; border:none; text-align:left; padding:0;
+  }
+  .gear { width:15px; height:15px; color:#81226B; flex:none; }
+  .gear svg { width:100%; height:100%; }
+  .rules-title { font-size:10.5px; font-weight:500; color:#81226B; }
+  .rules-count { flex:1; text-align:right; font-size:8.5px; color:#1D1D1F; }
+  .rules-body { max-height:0; overflow:hidden; transition:max-height .45s ease; }
+  .rules-card.open .rules-body { max-height:420px; }
+  .rules-card.open .chev { transform:rotate(225deg) translate(-2px,-2px); }
+  .rrow { display:flex; gap:10px; padding:8px 0; }
+  .rrow:first-child { margin-top:10px; border-top:1px dashed #EC274F; padding-top:10px; }
+  .rrow + .rrow { border-top:1px dashed #EC274F; }
+  .rname { font-size:9.5px; font-weight:500; color:#81226B; width:86px; flex:none; }
+  .rtxt { flex:1; font-size:9px; color:#1D1D1F; line-height:1.55; }
+
+  /* ============ Footer + CTA ============ */
+  .foot-hint { text-align:center; font-size:9px; color:#1D1D1F; margin:4px 0 12px; }
+  .cta {
+    width:100%; padding:14px; border:none; border-radius:12px;
+    font-size:14px; font-weight:500; color:#fff; letter-spacing:.2px;
+    background:linear-gradient(90deg,#F43460 0%,#F4B8D0 100%);
+    box-shadow:0 6px 22px -4px rgba(244,52,96,.5);
+    transition:background .25s ease, transform .2s ease, box-shadow .3s ease;
+  }
+  .cta:hover {
+    background:linear-gradient(90deg,#F4B8D0 0%,#F43460 100%);
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px -6px rgba(244,52,96,.65);
+  }
+  .cta.approved {
+    background:linear-gradient(90deg,#5DCAA5 0%,#4FB893 100%);
+    box-shadow:0 6px 22px -4px rgba(93,202,165,.5);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration:.01ms !important; animation:none !important; }
+  }
+  @media (max-width:520px) {
+    .tgrid { grid-template-columns:1fr; }
+    .ptitle { font-size:14px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- Header stack -->
+  <div class="hdr">
+    <div class="logo-big">Caast<span>.</span></div>
+    <div class="tagline">influence network</div>
+    <div class="pdots" aria-label="Step 5 of 7">
+      <div class="pdot"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div>
+      <div class="pdot active"></div><div class="pdot"></div><div class="pdot"></div>
+    </div>
+    <div class="hdr-gap"></div>
+  </div>
+
+  <div class="screen">
+
+    <!-- Page header row -->
+    <div class="phead">
+      <div class="logo-sm">Caast<span>.</span></div>
+      <div class="ptitle">Your <em>growth plan</em></div>
+      <div class="bpill">Hotcrown</div>
+    </div>
+    <div class="edit-hint">Anything <span class="du">dotted-underlined</span> is yours to edit - tap it. Approve once at the bottom.</div>
+
+    <!-- ============ Goal ============ -->
+    <div class="card">
+      <div class="clabel">90-day goal</div>
+      <div class="goal-row">
+        <span class="goal-from"><span class="ed" data-type="moneyk" data-val="117">$117K</span></span>
+        <span class="goal-arrow">→</span>
+        <span class="goal-to"><span class="ed" id="goalTo" data-type="moneyk" data-val="150">$117K</span></span>
+        <span class="goal-mo">/month</span>
+      </div>
+      <div class="goal-sub">
+        <span class="badge badge-green" id="goalDelta">+28%</span>
+        <span class="txt">led by paid social - approve below and Caast runs it</span>
+      </div>
+      <div class="dash-sep">
+        <div class="goal-formula">Baseline: your Shopify revenue, trailing 3-month average</div>
+      </div>
+    </div>
+
+    <!-- ============ Targets ============ -->
+    <div class="tgrid">
+      <div class="tcard">
+        <div class="lbl">ROAS - blended paid</div>
+        <div class="val"><span class="ed" data-type="mult" data-val="3.0">3.0x</span></div>
+        <div class="today">today ~1.5x · ad-hoc boosting</div>
+        <button class="info" aria-label="ROAS benchmark">i</button>
+        <div class="tip">
+          <div class="bm">2.5-4.0x is healthy for Meta ecommerce; 3.0x+ is strong. At jewelry's ~60% margin, break-even is ~1.7x - this target is profit.</div>
+          <div class="src">TrueProfit · Triple Whale, 35,000+ ad accounts (2026)</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="lbl">CPA - cost per order</div>
+        <div class="val">≤ <span class="ed" data-type="money" data-val="80">$80</span></div>
+        <div class="today">today ~$160</div>
+        <button class="info" aria-label="CPA benchmark">i</button>
+        <div class="tip">
+          <div class="bm">Set by your AOV ÷ target ROAS ($240 ÷ 3.0). Jewelry's high order value supports a higher CPA than the ~$38 ecommerce median.</div>
+          <div class="src">AdAmigo.ai · 27five (2026)</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="lbl">Conversion - paid traffic</div>
+        <div class="val"><span class="ed" data-type="pct" data-val="1.2">1.2%</span></div>
+        <div class="today">today 0.9%</div>
+        <button class="info" aria-label="Conversion benchmark">i</button>
+        <div class="tip">
+          <div class="bm">Jewelry converts at ~0.9-1.2% on-site; retargeting-weighted paid traffic lands above site average.</div>
+          <div class="src">ConvertCart (2026)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Budget ============ -->
+    <div class="card">
+      <div class="bud-head">
+        <div class="clabel">Monthly ad budget</div>
+        <span class="badge badge-plum">Recommended - yours to set</span>
+      </div>
+      <div class="bud-num-row">
+        <span class="bud-num"><span class="ed" id="budNum" data-type="money" data-val="3000">$3,000</span></span>
+        <span class="bud-mo">/month</span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" class="bslider" id="budSlider" min="1000" max="10000" step="250" value="3000" aria-label="Monthly ad budget">
+        <div class="rails"><span>$1,000</span><span>$10,000</span></div>
+      </div>
+      <div class="bud-cap">Scales toward ~$6,000 by Day 90 <b style="font-weight:500;color:#81226B">only if performance holds</b>. This is also your hard cap - change it anytime.</div>
+
+      <div class="dash-sep">
+        <div class="split-head">
+          <div class="clabel">Where it goes</div>
+          <div class="mtabs" role="tablist">
+            <button class="mtab" role="tab" data-month="1" data-active="true">Month 1</button>
+            <button class="mtab" role="tab" data-month="3" data-active="false">Month 3</button>
+          </div>
+        </div>
+        <div class="sbar" aria-hidden="true">
+          <div class="seg p" id="segP" style="width:55%"></div>
+          <div class="seg r" id="segR" style="width:35%"></div>
+          <div class="seg b" id="segB" style="width:10%"></div>
+        </div>
+        <div class="legend">
+          <div class="lrow">
+            <span class="ldot p"></span>
+            <span class="lname">Prospecting</span>
+            <span class="ldesc">people who match your buyers but don't know Hotcrown yet</span>
+            <span class="lpct"><span class="ed splited" id="pctP" data-type="pct0" data-val="55">55%</span></span>
+          </div>
+          <div class="lrow">
+            <span class="ldot r"></span>
+            <span class="lname">Retargeting</span>
+            <span class="ldesc">convert the ~54K people already visiting your store each month</span>
+            <span class="lpct"><span class="ed splited" id="pctR" data-type="pct0" data-val="35">35%</span></span>
+          </div>
+          <div class="lrow">
+            <span class="ldot b"></span>
+            <span class="lname">Past buyers</span>
+            <span class="ldesc">second purchases and gift occasions</span>
+            <span class="lpct"><span class="ed splited" id="pctB" data-type="pct0" data-val="10">10%</span></span>
+          </div>
+        </div>
+        <div class="split-warn" id="splitWarn">Splits should total 100%</div>
+      </div>
+    </div>
+
+    <!-- ============ Audiences ============ -->
+    <div class="card">
+      <div class="clabel" style="margin-bottom:4px;">Audiences - who we reach</div>
+      <div class="arow">
+        <button class="arow-top" aria-expanded="false">
+          <span class="aname">Lookalikes of your buyers</span>
+          <span class="awhy">highest-quality prospecting</span>
+          <span class="chev"></span>
+        </button>
+        <div class="adef">Built from your Shopify customer list - people who resemble your best customers.</div>
+      </div>
+      <div class="arow">
+        <button class="arow-top" aria-expanded="false">
+          <span class="aname">Interest prospecting</span>
+          <span class="awhy">fills the funnel, feeds the algorithm</span>
+          <span class="chev"></span>
+        </button>
+        <div class="adef">Fine jewelry, gifting, and adjacent style interests - kept broad so Meta's algorithm can learn.</div>
+      </div>
+      <div class="arow">
+        <button class="arow-top" aria-expanded="false">
+          <span class="aname">Retargeting</span>
+          <span class="awhy">warmest traffic, best ROAS</span>
+          <span class="chev"></span>
+        </button>
+        <div class="adef">Site visitors (<span class="ed" data-type="num" data-val="30">30</span> days), product-page viewers (<span class="ed" data-type="num" data-val="14">14</span> days), cart abandoners (<span class="ed" data-type="num" data-val="14">14</span> days) - each with its own message.</div>
+      </div>
+      <div class="arow">
+        <button class="arow-top" aria-expanded="false">
+          <span class="aname">Past buyers</span>
+          <span class="awhy">cheapest revenue: repeat</span>
+          <span class="chev"></span>
+        </button>
+        <div class="adef">Purchased up to <span class="ed" data-type="num" data-val="12">12</span> months ago - new arrivals, complements to what they bought, gift moments.</div>
+      </div>
+      <div class="arow">
+        <button class="arow-top" aria-expanded="false">
+          <span class="aname">Exclusions</span>
+          <span class="awhy">no wasted spend, no ad fatigue</span>
+          <span class="chev"></span>
+        </button>
+        <div class="adef">Buyers from the last <span class="ed" data-type="num" data-val="14">14</span> days are excluded everywhere.</div>
+      </div>
+    </div>
+
+    <!-- ============ The plan ============ -->
+    <div class="card">
+      <div class="clabel">The plan - paid engine, organic support</div>
+
+      <div class="trow">
+        <div class="trow-head">
+          <span class="tname">Paid social · Meta</span>
+          <span class="badge badge-pink">Engine</span>
+        </div>
+        <div class="tfield"><span class="fl">THEME</span><span class="fv"><span class="ed" data-type="text">Summer holidays style campaign</span></span></div>
+        <div class="tfield"><span class="fl">CONCEPTS</span><span class="fv fv2"><span class="ed" data-type="text">Minutes in life on holiday: videos, testimonials and inspiration carousels</span></span></div>
+      </div>
+
+      <div class="trow">
+        <div class="trow-head">
+          <span class="tname">Organic · Hotcrown IG + TikTok</span>
+          <span class="badge badge-gray">Support</span>
+        </div>
+        <div class="tfield"><span class="fl">THEME</span><span class="fv"><span class="ed" data-type="text">Portfolio · new arrivals · UGC</span></span></div>
+        <div class="tfield"><span class="fl">CONCEPTS</span><span class="fv fv2"><span class="ed" data-type="text">3-4 posts/week: product storytelling, styling, social proof - winners graduate to paid</span></span></div>
+      </div>
+
+      <div class="trow sera-off" id="seraRow">
+        <div class="sera-head">
+          <div class="avatar">S</div>
+          <div class="sera-meta">
+            <div class="trow-head">
+              <span class="tname">Sera · the jewelry growth agent</span>
+              <span class="badge badge-plum">Phase 2 - optional</span>
+            </div>
+          </div>
+          <button class="toggle" id="seraToggle" role="switch" aria-checked="false" aria-label="Activate Sera in phase 2"><span class="knob"></span></button>
+        </div>
+        <div class="sera-body">
+          <div class="tfield"><span class="fl">ROLE</span><span class="fv fv2">A dedicated vertical influencer channel layered on top - audience building and earned reach.</span></div>
+        </div>
+        <div class="sera-note">Sera will activate once the paid engine is delivering - your choice, your timing.</div>
+      </div>
+
+      <div class="dash-sep">
+        <div class="plan-cap"><b style="font-weight:500;color:#81226B">Why this works at an SMB budget:</b> a consolidated Advantage+ structure keeps Meta's learning efficient at $100/day - and organic does the expensive part, creative proof, for free.</div>
+      </div>
+    </div>
+
+    <!-- ============ Shopify edge ============ -->
+    <div class="card">
+      <div class="clabel">The Shopify edge - ads that know your store</div>
+      <div class="edge-intro">Most tools generate ads blind to what's selling or in stock. Caast reads <b>Hotcrown's</b> live Shopify data:</div>
+      <div style="margin-top:6px;">
+        <div class="erow">
+          <span class="eicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg></span>
+          <span class="ename">Inventory</span>
+          <span class="etxt">Catalog ads sync to live stock - never a sold-out piece. Spend shifts to high-runners, and away from SKUs running low.</span>
+        </div>
+        <div class="erow">
+          <span class="eicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+          <span class="ename">Bundles</span>
+          <span class="etxt">Recommends bundles to lift order value - you approve, we build the ads.</span>
+        </div>
+        <div class="erow">
+          <span class="eicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+          <span class="ename">Discounts</span>
+          <span class="etxt">Time-boxed promo codes per campaign ("STARS15") - urgency for the buyer, clean attribution for you.</span>
+        </div>
+        <div class="erow">
+          <span class="eicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+          <span class="ename">Pricing</span>
+          <span class="etxt">Surfaces signals - an underpriced high-demand piece, an anchor opportunity. Recommendations only.</span>
+        </div>
+      </div>
+      <div class="dash-sep">
+        <div class="edge-cap">Bundles, discounts, and pricing always come to you for approval first.</div>
+      </div>
+    </div>
+
+    <!-- ============ Operating rules (hidden) ============ -->
+    <div class="card rules-card" id="rulesCard">
+      <button class="rules-head" id="rulesHead" aria-expanded="false">
+        <span class="gear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="rules-title">How the system runs itself</span>
+        <span class="rules-count">5 rules</span>
+        <span class="chev"></span>
+      </button>
+      <div class="rules-body">
+        <div class="rrow"><span class="rname">Learning first</span><span class="rtxt">No verdicts in the first 7 days of a new campaign - Meta's learning phase is respected, not overridden.</span></div>
+        <div class="rrow"><span class="rname">Kill rule</span><span class="rtxt">Pause any ad whose CPA exceeds 150% of target, or whose CTR sits below 1% after enough impressions to judge.</span></div>
+        <div class="rrow"><span class="rname">Scale rule</span><span class="rtxt">Winners get +20-30% budget every 3-4 days while ROAS holds at or above target - never more. This is the path from $3,000 to $6,000, and it stops at your cap.</span></div>
+        <div class="rrow"><span class="rname">Creative refresh</span><span class="rtxt">15-20+ new ad variations tested monthly - testing velocity is the strongest performance driver, and volume is what Caast is built for. Ads are replaced as frequency nears ~2.5-3.0, before fatigue reaches your CPA.</span></div>
+        <div class="rrow"><span class="rname">Your rhythm</span><span class="rtxt">Daily automated checks. Weekly: effort shifts to what works, summary to you. Monthly: review against your targets and budget.</span></div>
+      </div>
+    </div>
+
+    <!-- ============ Footer ============ -->
+    <div class="foot-hint">You can change any of this later - Caast adapts the plan around your edits.</div>
+    <button class="cta" id="approveBtn">Approve plan → Content plan</button>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- formatting ---------- */
+  function fmt(type, v){
+    switch(type){
+      case "moneyk": return "$" + v + "K";
+      case "money":  return "$" + Number(v).toLocaleString("en-US");
+      case "mult":   return v + "x";
+      case "pct":    return v + "%";
+      case "pct0":   return Math.round(v) + "%";
+      case "num":    return String(v);
+      default:       return String(v);
+    }
+  }
+
+  /* ---------- goal ticker (117 -> 150, blur morph) ---------- */
+  var goalTo = document.getElementById("goalTo");
+  var goalTarget = parseFloat(goalTo.dataset.val);
+  if (reduced){ goalTo.textContent = fmt("moneyk", goalTarget); }
+  else {
+    var gv = 117;
+    setTimeout(function(){
+      var iv = setInterval(function(){
+        gv += 1;
+        if (gv >= goalTarget){ gv = goalTarget; clearInterval(iv); goalTo.classList.remove("morphing"); }
+        goalTo.textContent = fmt("moneyk", gv);
+        goalTo.classList.add("morphing");
+        setTimeout(function(){ goalTo.classList.remove("morphing"); }, 80);
+      }, 50);
+    }, 500);
+  }
+  function updateDelta(){
+    var from = parseFloat(document.querySelector('.goal-from .ed').dataset.val);
+    var to = parseFloat(goalTo.dataset.val);
+    var d = Math.round((to - from) / from * 100);
+    var el = document.getElementById("goalDelta");
+    el.textContent = (d >= 0 ? "+" : "") + d + "%";
+    el.className = "badge " + (d >= 0 ? "badge-green" : "badge-plum");
+  }
+
+  /* ---------- inline editing ---------- */
+  function makeEditable(span){
+    span.setAttribute("tabindex","0");
+    span.setAttribute("role","button");
+    function start(){
+      if (span.querySelector("input")) return;
+      var type = span.dataset.type || "text";
+      var isText = (type === "text");
+      var current = isText ? span.textContent : span.dataset.val;
+      var original = span.dataset.original !== undefined ? span.dataset.original : current;
+      if (span.dataset.original === undefined) span.dataset.original = current;
+      var input = document.createElement("input");
+      input.className = "ed-input";
+      input.value = current;
+      input.style.width = Math.max(span.offsetWidth + 14, isText ? 160 : 44) + "px";
+      if (!isText){ input.inputMode = "decimal"; }
+      span.textContent = "";
+      span.appendChild(input);
+      input.focus(); input.select();
+      function commit(){
+        var raw = input.value.trim();
+        var val;
+        if (isText){ val = raw || original; }
+        else {
+          val = parseFloat(raw.replace(/[^0-9.\-]/g,""));
+          if (isNaN(val)) val = parseFloat(original);
+          if (type === "pct0"){ val = Math.min(100, Math.max(0, Math.round(val))); }
+          if (type === "money" && span.id === "budNum"){ val = Math.min(10000, Math.max(1000, Math.round(val/250)*250)); }
+        }
+        span.dataset.val = val;
+        span.textContent = isText ? val : fmt(type, val);
+        if (String(val) !== String(original)) span.classList.add("edited"); else span.classList.remove("edited");
+        afterEdit(span);
+      }
+      input.addEventListener("blur", commit);
+      input.addEventListener("keydown", function(e){
+        if (e.key === "Enter"){ e.preventDefault(); input.blur(); }
+        if (e.key === "Escape"){ input.value = original; input.blur(); }
+      });
+    }
+    span.addEventListener("click", function(e){ e.stopPropagation(); start(); });
+    span.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); start(); } });
+  }
+  document.querySelectorAll(".ed").forEach(makeEditable);
+
+  function afterEdit(span){
+    if (span.closest(".goal-row")) updateDelta();
+    if (span.id === "budNum"){ slider.value = span.dataset.val; paintSlider(); }
+    if (span.classList.contains("splited")){ paintSplit(true); checkSplit(); }
+  }
+
+  /* ---------- budget slider ---------- */
+  var slider = document.getElementById("budSlider");
+  var budNum = document.getElementById("budNum");
+  function paintSlider(){
+    var pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.setProperty("--fill", pct + "%");
+  }
+  slider.addEventListener("input", function(){
+    budNum.dataset.val = slider.value;
+    budNum.textContent = fmt("money", slider.value);
+    if (slider.value !== "3000") budNum.classList.add("edited"); else budNum.classList.remove("edited");
+    paintSlider();
+  });
+  paintSlider();
+
+  /* ---------- budget split ---------- */
+  var splits = { 1: {p:55, r:35, b:10}, 3: {p:45, r:40, b:15} };
+  var month = 1;
+  function paintSplit(fromEdit){
+    var p = parseFloat(document.getElementById("pctP").dataset.val);
+    var r = parseFloat(document.getElementById("pctR").dataset.val);
+    var b = parseFloat(document.getElementById("pctB").dataset.val);
+    document.getElementById("segP").style.width = p + "%";
+    document.getElementById("segR").style.width = r + "%";
+    document.getElementById("segB").style.width = b + "%";
+    if (fromEdit) splits[month] = {p:p, r:r, b:b};
+  }
+  function setSplitValues(s){
+    [["pctP",s.p],["pctR",s.r],["pctB",s.b]].forEach(function(pair){
+      var el = document.getElementById(pair[0]);
+      el.dataset.val = pair[1];
+      el.textContent = fmt("pct0", pair[1]);
+    });
+    paintSplit(false); checkSplit();
+  }
+  function checkSplit(){
+    var sum = ["pctP","pctR","pctB"].reduce(function(a,id){ return a + parseFloat(document.getElementById(id).dataset.val); }, 0);
+    var warn = document.getElementById("splitWarn");
+    if (Math.round(sum) !== 100){ warn.textContent = "Splits should total 100% - currently " + Math.round(sum) + "%"; warn.classList.add("show"); }
+    else warn.classList.remove("show");
+  }
+  document.querySelectorAll(".mtab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      document.querySelectorAll(".mtab").forEach(function(t){ t.dataset.active = "false"; });
+      tab.dataset.active = "true";
+      month = parseInt(tab.dataset.month, 10);
+      setSplitValues(splits[month]);
+    });
+  });
+  setTimeout(function(){ paintSplit(false); }, 300);
+
+  /* ---------- audiences expand ---------- */
+  document.querySelectorAll(".arow-top").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var row = btn.closest(".arow");
+      var open = row.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+
+  /* ---------- Sera toggle ---------- */
+  var seraToggle = document.getElementById("seraToggle");
+  var seraRow = document.getElementById("seraRow");
+  seraToggle.addEventListener("click", function(){
+    var on = seraToggle.getAttribute("aria-checked") === "true";
+    seraToggle.setAttribute("aria-checked", on ? "false" : "true");
+    seraRow.classList.toggle("sera-off", on);
+    seraRow.classList.toggle("sera-on", !on);
+  });
+
+  /* ---------- operating rules disclosure ---------- */
+  var rulesHead = document.getElementById("rulesHead");
+  rulesHead.addEventListener("click", function(){
+    var card = document.getElementById("rulesCard");
+    var open = card.classList.toggle("open");
+    rulesHead.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  /* ---------- tooltips ---------- */
+  document.querySelectorAll(".info").forEach(function(btn){
+    var tip = btn.parentElement.querySelector(".tip");
+    function show(){ closeTips(); tip.classList.add("show"); btn.classList.add("open"); }
+    function hide(){ tip.classList.remove("show"); btn.classList.remove("open"); }
+    btn.addEventListener("mouseenter", show);
+    btn.parentElement.addEventListener("mouseleave", hide);
+    btn.addEventListener("click", function(e){ e.stopPropagation(); tip.classList.contains("show") ? hide() : show(); });
+  });
+  function closeTips(){ document.querySelectorAll(".tip.show").forEach(function(t){ t.classList.remove("show"); }); document.querySelectorAll(".info.open").forEach(function(b){ b.classList.remove("open"); }); }
+  document.addEventListener("click", closeTips);
+
+  /* ---------- approve ---------- */
+  var approve = document.getElementById("approveBtn");
+  approve.addEventListener("click", function(){
+    if (approve.classList.contains("approved")) return;
+    approve.classList.add("approved");
+    approve.textContent = "Plan approved ✓ — building your content plan";
+  });
+})();
+</script>
+</body>
+</html>
