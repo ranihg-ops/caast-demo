@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caast — Your brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#FFFFFF; }
+  body {
+    font-family:'Poppins',sans-serif; color:#1D1D1F;
+    display:flex; justify-content:center; min-height:100vh;
+    padding:18px 0 48px; -webkit-font-smoothing:antialiased;
+  }
+  button { font-family:inherit; cursor:pointer; background:none; border:none; }
+  :focus-visible { outline:2px solid #F43460; outline-offset:2px; border-radius:6px; }
+
+  .page { position:relative; max-width:680px; width:100%; padding:32px 24px 28px;
+    display:flex; flex-direction:column; align-items:center; }
+  .screen { position:relative; max-width:600px; width:100%; }
+
+  /* header */
+  .hdr { display:flex; flex-direction:column; align-items:center; width:100%; }
+  .logo-big { font-size:32px; font-weight:600; color:#F43460; letter-spacing:-.5px; }
+  .logo-big span { color:#81226B; }
+  .tagline { margin-top:6px; font-size:13px; color:#EC274F; }
+  .pdots { margin-top:20px; display:flex; gap:7px; align-items:center; }
+  .pdot { width:6px; height:6px; border-radius:50%; background:#EC274F; opacity:.35; transition:all .3s; }
+  .pdot.active { width:18px; border-radius:3px; opacity:1; }
+  .hdr-gap { height:26px; }
+
+  .phead { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .logo-sm { font-size:26px; font-weight:600; color:#F43460; letter-spacing:-.5px; white-space:nowrap; }
+  .logo-sm span { color:#81226B; }
+  .ptitle { flex:1; text-align:center; font-size:16px; font-weight:500; color:#81226B; }
+  .ptitle em { font-style:normal; color:#F43460; }
+  .bpill { border:1px solid #D990B3; color:#81226B; font-size:11px; font-weight:500; padding:5px 12px; border-radius:100px; white-space:nowrap; }
+  .sub-hint { text-align:center; font-size:10px; color:#1D1D1F; opacity:.55; margin-bottom:18px; }
+
+  /* progress count */
+  .pcount { text-align:center; font-size:9px; font-weight:500; color:#81226B; letter-spacing:.5px; margin-bottom:14px; }
+  .pcount b { color:#F43460; }
+
+  /* question card */
+  .qcard { width:100%; background:#FCF5F8; border:1px solid #EEDCE4; border-radius:16px;
+    margin-bottom:10px; transition:border-color .3s ease, box-shadow .3s ease, background .3s ease; }
+  .qcard.active { border-color:#F43460; box-shadow:0 12px 32px -10px rgba(244,52,96,.22); }
+  .qcard.done:not(.active) { background:#FFFFFF; }
+
+  .qhead { display:flex; align-items:center; gap:11px; width:100%; padding:15px 16px; text-align:left; }
+  .qnum { width:22px; height:22px; flex:none; border-radius:50%; border:1.5px solid #D990B3;
+    color:#81226B; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; transition:all .3s ease; }
+  .qcard.active .qnum { background:linear-gradient(135deg,#F43460,#EC274F); border-color:#F43460; color:#fff; }
+  .qcard.done:not(.active) .qnum { background:#5DCAA5; border-color:#5DCAA5; color:#fff; }
+  .qcard.done:not(.active) .qnum::after { content:"✓"; } .qcard.done:not(.active) .qnum-t { display:none; }
+  .qtitle { font-size:13px; font-weight:600; color:#81226B; flex:none; }
+  .qsummary { flex:1; text-align:right; font-size:11px; color:#1D1D1F; opacity:.78; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .qcard.active .qsummary { display:none; }
+  .qchev { width:8px; height:8px; border-right:1.5px solid #B8B6AF; border-bottom:1.5px solid #B8B6AF; transform:rotate(-45deg); transition:transform .3s ease; flex:none; }
+  .qcard.active .qchev { transform:rotate(45deg); }
+
+  .qbody-wrap { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1); }
+  .qcard.active .qbody-wrap { grid-template-rows:1fr; }
+  .qbody { overflow:hidden; }
+  .qbody-inner { padding:2px 16px 18px; }
+  .qprompt { font-size:13px; font-weight:500; color:#1D1D1F; margin-bottom:12px; }
+
+  /* option rows */
+  .opt { display:flex; align-items:flex-start; gap:10px; width:100%; text-align:left;
+    padding:11px 12px; border:1px solid #EEDCE4; border-radius:11px; margin-bottom:7px;
+    background:#fff; transition:border-color .2s ease, background .2s ease; }
+  .opt:hover { border-color:#D990B3; }
+  .opt.sel { border-color:#F43460; background:#FCEFF5; }
+  .mark { width:16px; height:16px; flex:none; margin-top:1px; border:1.5px solid #D990B3; transition:all .2s ease; position:relative; }
+  .single .mark { border-radius:50%; }
+  .multi .mark { border-radius:5px; }
+  .opt.sel .mark { border-color:#F43460; background:#F43460; }
+  .single .opt.sel .mark::after { content:""; position:absolute; inset:3px; background:#fff; border-radius:50%; }
+  .multi .opt.sel .mark::after { content:"✓"; color:#fff; font-size:11px; font-weight:700; position:absolute; top:-1px; left:2px; }
+  .opt-label { font-size:12px; font-weight:500; color:#1D1D1F; line-height:1.4; }
+  .opt-desc { display:block; font-size:10px; font-weight:400; color:#1D1D1F; opacity:.6; margin-top:1px; }
+
+  .opt-other .opt-label { color:#81226B; }
+  .other-input, .free-input, .num-input {
+    width:100%; font-family:'Poppins',sans-serif; font-size:12px; color:#1D1D1F;
+    border:1px solid #D990B3; border-radius:9px; padding:9px 11px; margin-top:2px; outline:none; background:#fff;
+  }
+  .other-input:focus, .free-input:focus, .num-input:focus { border-color:#F43460; }
+  .hidden { display:none !important; }
+
+  /* prefilled chips (Q3) */
+  .seg-label { font-size:10px; font-weight:500; color:#81226B; margin-bottom:8px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:500; color:#81226B;
+    background:#fff; border:1px solid #D990B3; border-radius:100px; padding:6px 11px; transition:all .2s ease; }
+  .chip .x { font-size:13px; color:#B8B6AF; line-height:1; }
+  .chip.removed { opacity:.4; text-decoration:line-through; border-style:dashed; }
+  .chip.removed .x::before { content:"+"; } .chip .x::before { content:"×"; }
+
+  /* budget chips (Q5) */
+  .brec { font-size:12px; color:#1D1D1F; margin-bottom:12px; }
+  .brec b { color:#81226B; font-weight:600; }
+  .bchips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
+  .bchip { font-size:12px; font-weight:500; color:#1D1D1F; background:#fff; border:1px solid #EEDCE4;
+    border-radius:100px; padding:8px 14px; transition:all .2s ease; }
+  .bchip:hover { border-color:#D990B3; }
+  .bchip.sel { border-color:#F43460; background:#FCEFF5; color:#81226B; }
+  .bexact { font-size:10px; color:#81226B; font-weight:500; margin-top:4px; }
+
+  /* country select */
+  .csel { width:100%; font-family:'Poppins',sans-serif; font-size:12px; color:#1D1D1F;
+    border:1px solid #D990B3; border-radius:9px; padding:9px 11px; margin-top:10px; outline:none; background:#fff; }
+
+  /* record box (Q6) */
+  .rec-row { display:flex; gap:10px; align-items:flex-start; margin-top:4px; }
+  textarea.free-input { min-height:78px; resize:vertical; line-height:1.5; }
+  .mic { width:44px; height:44px; flex:none; border-radius:12px; border:1px solid #D990B3;
+    display:flex; align-items:center; justify-content:center; color:#F43460; transition:all .2s ease; }
+  .mic:hover { border-color:#F43460; background:#FCEFF5; }
+  .mic.recording { background:#EC274F; border-color:#EC274F; color:#fff; animation:pulse 1.3s infinite; }
+  @keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(236,39,79,.4);} 50%{ box-shadow:0 0 0 8px rgba(236,39,79,0);} }
+  .mic svg { width:20px; height:20px; }
+  .rec-status { font-size:10px; color:#81226B; font-weight:500; margin-top:8px; min-height:14px; }
+  .rec-status .dot { color:#EC274F; }
+
+  /* continue button inside a card */
+  .qnext { display:inline-flex; align-items:center; gap:6px; margin-top:6px;
+    font-size:12px; font-weight:500; color:#fff; padding:9px 18px; border-radius:10px;
+    background:linear-gradient(90deg,#F43460,#F4B8D0); transition:background .25s ease, transform .15s ease; }
+  .qnext:hover { background:linear-gradient(90deg,#F4B8D0,#F43460); transform:translateY(-1px); }
+
+  /* CTA */
+  .cta { width:100%; margin-top:8px; padding:14px; border-radius:12px; font-size:14px; font-weight:500;
+    color:#fff; letter-spacing:.2px; background:linear-gradient(90deg,#F43460 0%,#F4B8D0 100%);
+    box-shadow:0 6px 22px -4px rgba(244,52,96,.5); transition:background .25s ease, transform .2s ease, opacity .3s ease; }
+  .cta:hover { background:linear-gradient(90deg,#F4B8D0 0%,#F43460 100%); transform:translateY(-1px); }
+  .cta.dim { opacity:.5; }
+  .cta.approved { background:linear-gradient(90deg,#5DCAA5,#4FB893); }
+  .foot-hint { text-align:center; font-size:9px; color:#1D1D1F; opacity:.5; margin:14px 0 10px; }
+
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation:none !important; } }
+  @media (max-width:520px){ .ptitle{ font-size:14px; } .qsummary{ max-width:140px; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hdr">
+    <div class="logo-big">Caast<span>.</span></div>
+    <div class="tagline">growth network</div>
+    <div class="pdots" aria-label="Step 5 of 8">
+      <div class="pdot"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div>
+      <div class="pdot active"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div>
+    </div>
+    <div class="hdr-gap"></div>
+  </div>
+
+  <div class="screen">
+    <div class="phead">
+      <div class="logo-sm">Caast<span>.</span></div>
+      <div class="ptitle">Your <em>brief</em></div>
+      <div class="bpill">Hotcrown</div>
+    </div>
+    <div class="sub-hint">Six quick things, mostly a tap. About two minutes - and it shapes your whole plan.</div>
+    <div class="pcount"><b id="answered">0</b> of 6 answered</div>
+
+    <!-- ===== Q1 objective (single) ===== -->
+    <div class="qcard multi active" data-q="1" data-type="multi">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">1</span></span>
+        <span class="qtitle">The objective</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="qprompt">What is your growth objective for the next 90 days? <span style="font-weight:400;opacity:.6">choose one primary, more optional</span></div>
+        <button class="opt" data-val="Grow profitably"><span class="mark"></span><span class="opt-label">Grow profitably<span class="opt-desc">prioritize margin and efficiency over pure growth</span></span></button>
+        <button class="opt" data-val="Launch a product or collection"><span class="mark"></span><span class="opt-label">Launch a product or collection<span class="opt-desc">build demand around something new</span></span></button>
+        <button class="opt" data-val="Clear specific inventory"><span class="mark"></span><span class="opt-label">Clear specific inventory<span class="opt-desc">move overstock or end-of-season pieces</span></span></button>
+        <button class="opt" data-val="Build brand awareness"><span class="mark"></span><span class="opt-label">Build brand awareness<span class="opt-desc">reach and recognition first, sales follow</span></span></button>
+        <button class="opt" data-val="Break into a new market"><span class="mark"></span><span class="opt-label">Break into a new market<span class="opt-desc">a new geography or a new type of customer</span></span></button>
+        <button class="opt opt-other" data-other><span class="mark"></span><span class="opt-label">Something else</span></button>
+        <input class="other-input hidden" placeholder="Your objective in a few words" data-otherinput>
+        <div style="margin-top:12px;"><button class="qnext" data-next>Continue</button></div>
+      </div></div></div>
+    </div>
+
+    <!-- ===== Q2 coming up (multi) ===== -->
+    <div class="qcard multi" data-q="2" data-type="multi">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">2</span></span>
+        <span class="qtitle">What's coming up</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="qprompt">What should be the main themes of the plan? <span style="font-weight:400;opacity:.6">pick any</span></div>
+        <button class="opt" data-val="New product or collection launch"><span class="mark"></span><span class="opt-label">A new product or collection launch</span></button>
+        <button class="opt" data-val="Seasonal moment"><span class="mark"></span><span class="opt-label">A seasonal moment<span class="opt-desc">holiday, Valentine's, wedding season</span></span></button>
+        <button class="opt" data-val="Hero-product push"><span class="mark"></span><span class="opt-label">A hero-product push<span class="opt-desc">a proven bestseller</span></span></button>
+        <button class="opt" data-val="Sale or promo event"><span class="mark"></span><span class="opt-label">A sale or promo event</span></button>
+        <button class="opt" data-val="Brand / storytelling"><span class="mark"></span><span class="opt-label">A brand / storytelling campaign</span></button>
+        <button class="opt" data-val="Always-on"><span class="mark"></span><span class="opt-label">Nothing specific<span class="opt-desc">steady, always-on</span></span></button>
+        <button class="opt opt-other" data-other><span class="mark"></span><span class="opt-label">Add your own</span></button>
+        <input class="other-input hidden" placeholder="Something else to build around" data-otherinput>
+        <input class="free-input" placeholder="Name + date, if there is one (e.g. &quot;Spring drop, April 12&quot;)" data-free style="margin-top:8px;">
+        <div style="margin-top:12px;"><button class="qnext" data-next>Continue</button></div>
+      </div></div></div>
+    </div>
+
+    <!-- ===== Q3 audience (multi + prefilled) ===== -->
+    <div class="qcard multi" data-q="3" data-type="multi">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">3</span></span>
+        <span class="qtitle">Who are the target customers</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="seg-label">From your Shopify - tap to remove any that don't fit:</div>
+        <div class="chips" data-prefill>
+          <button class="chip"><span>Women 25-40</span><span class="x"></span></button>
+          <button class="chip"><span>Gift shoppers</span><span class="x"></span></button>
+          <button class="chip"><span>Repeat buyers</span><span class="x"></span></button>
+        </div>
+        <div class="qprompt">Anyone you want to reach more of? <span style="font-weight:400;opacity:.6">pick any</span></div>
+        <button class="opt" data-val="Gifting buyers"><span class="mark"></span><span class="opt-label">Gifting buyers<span class="opt-desc">buying for someone else</span></span></button>
+        <button class="opt" data-val="Younger demographic"><span class="mark"></span><span class="opt-label">A younger demographic</span></button>
+        <button class="opt" data-val="Premium / luxury"><span class="mark"></span><span class="opt-label">A more premium / luxury buyer</span></button>
+        <button class="opt" data-val="First-time buyers"><span class="mark"></span><span class="opt-label">First-time buyers<span class="opt-desc">new to the category</span></span></button>
+        <button class="opt" data-val="Repeat / loyal"><span class="mark"></span><span class="opt-label">Repeat / loyal customers</span></button>
+        <button class="opt" data-val="Self-purchasers"><span class="mark"></span><span class="opt-label">Self-purchasers<span class="opt-desc">treating themselves</span></span></button>
+        <button class="opt" data-val="A community"><span class="mark"></span><span class="opt-label">A specific community<span class="opt-desc">e.g. brides, collectors</span></span></button>
+        <input class="free-input" placeholder="Describe your dream customer, if we missed them (optional)" data-free style="margin-top:8px;">
+        <div style="margin-top:12px;"><button class="qnext" data-next>Continue</button></div>
+      </div></div></div>
+    </div>
+
+    <!-- ===== Q4 markets (single + dropdown) ===== -->
+    <div class="qcard single" data-q="4" data-type="single">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">4</span></span>
+        <span class="qtitle">Where you want to grow</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="qprompt">Which countries and markets matter for the next 90 days?</div>
+        <button class="opt" data-val="Expand within our main market"><span class="mark"></span><span class="opt-label">Expand reach within our main market</span></button>
+        <button class="opt" data-val="Test one new country"><span class="mark"></span><span class="opt-label">Test one new country</span></button>
+        <button class="opt" data-val="Go broad international"><span class="mark"></span><span class="opt-label">Go broad international</span></button>
+        <button class="opt opt-other" data-other><span class="mark"></span><span class="opt-label">Something else</span></button>
+        <input class="other-input hidden" placeholder="Your market focus" data-otherinput>
+        <select class="csel hidden" data-geo>
+          <option value="">Pick the market(s)…</option>
+          <option>United States</option><option>United Kingdom</option><option>Canada</option>
+          <option>Australia</option><option>Germany</option><option>France</option><option>Other</option>
+        </select>
+      </div></div></div>
+    </div>
+
+    <!-- ===== Q5 budget (chips + edit) ===== -->
+    <div class="qcard" data-q="5" data-type="budget">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">5</span></span>
+        <span class="qtitle">Monthly ad budget</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="brec">We recommend <b>$3,000/month</b> to start - confirm or pick a range.</div>
+        <div class="bchips">
+          <button class="bchip" data-range="$1–2K">$1–2K</button>
+          <button class="bchip sel" data-range="$2–3.5K">$2–3.5K</button>
+          <button class="bchip" data-range="$3.5–5K">$3.5–5K</button>
+          <button class="bchip" data-range="$5–7.5K">$5–7.5K</button>
+          <button class="bchip" data-range="$7.5–10K">$7.5–10K</button>
+        </div>
+        <button class="bexact" data-exacttoggle>or set an exact amount →</button>
+        <input class="num-input hidden" inputmode="numeric" placeholder="$3,000" data-exact style="margin-top:8px;">
+        <div style="margin-top:14px;"><button class="qnext" data-next>Continue</button></div>
+      </div></div></div>
+    </div>
+
+    <!-- ===== Q6 anything else (write / record) ===== -->
+    <div class="qcard" data-q="6" data-type="text">
+      <button class="qhead">
+        <span class="qnum"><span class="qnum-t">6</span></span>
+        <span class="qtitle">Anything else?</span>
+        <span class="qsummary"></span>
+        <span class="qchev"></span>
+      </button>
+      <div class="qbody-wrap"><div class="qbody"><div class="qbody-inner">
+        <div class="qprompt">Anything you wish to add or want us to know? <span style="font-weight:400;opacity:.6">optional</span></div>
+        <div class="rec-row">
+          <textarea class="free-input" placeholder="Type it here…" data-free></textarea>
+          <button class="mic" data-mic aria-label="Record a voice note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <div class="rec-status" data-recstatus>Prefer talking? Tap the mic - we'll transcribe it and show it back.</div>
+      </div></div></div>
+    </div>
+
+    <button class="cta dim" id="cta">Continue to your growth plan →</button>
+    <div class="foot-hint">You can change any of this later - Caast adapts the plan around your answers.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".qcard"));
+  var answeredEl = document.getElementById("answered");
+  var cta = document.getElementById("cta");
+  var TOTAL = 6;
+
+  function indexOf(card){ return cards.indexOf(card); }
+  function setActive(card){
+    cards.forEach(function(c){ c.classList.remove("active"); });
+    if(card){ card.classList.add("active");
+      setTimeout(function(){ card.scrollIntoView({behavior:"smooth", block:"center"}); }, 120);
+    }
+  }
+  function nextOf(card){ var i = indexOf(card); return cards[i+1] || null; }
+  function advance(card){ var n = nextOf(card); if(n) setActive(n); else { setActive(null); cta.scrollIntoView({behavior:"smooth",block:"center"}); } }
+
+  function setSummary(card, text){
+    card.querySelector(".qsummary").textContent = text || "";
+    if(text){ card.classList.add("done"); } else { card.classList.remove("done"); }
+    refreshCount();
+  }
+  function refreshCount(){
+    var done = cards.filter(function(c){ return c.classList.contains("done"); }).length;
+    answeredEl.textContent = done;
+    if(done >= 5){ cta.classList.remove("dim"); } else { cta.classList.add("dim"); }
+  }
+
+  // header click -> toggle/focus that card
+  cards.forEach(function(card){
+    card.querySelector(".qhead").addEventListener("click", function(){
+      if(card.classList.contains("active")) setActive(null);
+      else setActive(card);
+    });
+  });
+
+  // ----- SINGLE select -----
+  cards.filter(function(c){ return c.dataset.type==="single"; }).forEach(function(card){
+    var other = card.querySelector("[data-other]");
+    var otherInput = card.querySelector("[data-otherinput]");
+    var geo = card.querySelector("[data-geo]");
+    card.querySelectorAll(".opt").forEach(function(opt){
+      opt.addEventListener("click", function(){
+        card.querySelectorAll(".opt").forEach(function(o){ o.classList.remove("sel"); });
+        opt.classList.add("sel");
+        var isOther = opt.hasAttribute("data-other");
+        if(otherInput){ otherInput.classList.toggle("hidden", !isOther); if(isOther) otherInput.focus(); }
+        // geo dropdown reveal (Q4): show unless "defend where we sell"
+        if(geo){ var hideGeo = opt.hasAttribute("data-nogeo") || isOther; geo.classList.toggle("hidden", hideGeo); }
+        if(isOther){ return; } // wait for typed value before advancing
+        var label = opt.querySelector(".opt-label").childNodes[0].textContent.trim();
+        var geoTxt = (geo && !geo.classList.contains("hidden") && geo.value) ? " · " + geo.value : "";
+        setSummary(card, label + geoTxt);
+        setTimeout(function(){ advance(card); }, 420);
+      });
+    });
+    if(otherInput){ otherInput.addEventListener("keydown", function(e){
+      if(e.key==="Enter" && otherInput.value.trim()){ setSummary(card, otherInput.value.trim()); advance(card); }
+    }); otherInput.addEventListener("blur", function(){ if(otherInput.value.trim()) setSummary(card, otherInput.value.trim()); }); }
+    if(geo){ geo.addEventListener("change", function(){
+      var sel = card.querySelector(".opt.sel"); if(!sel) return;
+      var label = sel.querySelector(".opt-label").childNodes[0].textContent.trim();
+      setSummary(card, label + (geo.value ? " · " + geo.value : ""));
+    }); }
+  });
+
+  // ----- MULTI select -----
+  cards.filter(function(c){ return c.dataset.type==="multi"; }).forEach(function(card){
+    var other = card.querySelector("[data-other]");
+    var otherInput = card.querySelector("[data-otherinput]");
+    card.querySelectorAll(".opt").forEach(function(opt){
+      opt.addEventListener("click", function(){
+        var isOther = opt.hasAttribute("data-other");
+        opt.classList.toggle("sel");
+        if(isOther && otherInput){ otherInput.classList.toggle("hidden", !opt.classList.contains("sel")); if(opt.classList.contains("sel")) otherInput.focus(); }
+      });
+    });
+    // prefilled chips (Q3)
+    var chips = card.querySelectorAll("[data-prefill] .chip");
+    chips.forEach(function(chip){ chip.addEventListener("click", function(){ chip.classList.toggle("removed"); }); });
+    // continue
+    card.querySelector("[data-next]").addEventListener("click", function(){
+      var picks = Array.prototype.map.call(card.querySelectorAll(".opt.sel"), function(o){
+        return o.hasAttribute("data-other") ? (otherInput && otherInput.value.trim() || "custom") : o.querySelector(".opt-label").childNodes[0].textContent.trim();
+      });
+      var kept = card.querySelectorAll("[data-prefill] .chip:not(.removed)").length;
+      var bits = [];
+      if(kept) bits.push(kept + " segment" + (kept>1?"s":""));
+      if(picks.length) bits.push(picks.length + " selected");
+      setSummary(card, bits.length ? bits.join(" · ") : "answered");
+      advance(card);
+    });
+  });
+
+  // ----- BUDGET -----
+  cards.filter(function(c){ return c.dataset.type==="budget"; }).forEach(function(card){
+    var range = "$2–3.5K";
+    card.querySelectorAll(".bchip").forEach(function(ch){
+      ch.addEventListener("click", function(){
+        card.querySelectorAll(".bchip").forEach(function(b){ b.classList.remove("sel"); });
+        ch.classList.add("sel"); range = ch.dataset.range;
+        var ex = card.querySelector("[data-exact]"); if(ex){ ex.value=""; ex.classList.add("hidden"); }
+      });
+    });
+    var exToggle = card.querySelector("[data-exacttoggle]");
+    var exact = card.querySelector("[data-exact]");
+    exToggle.addEventListener("click", function(){ exact.classList.toggle("hidden"); if(!exact.classList.contains("hidden")) exact.focus(); });
+    card.querySelector("[data-next]").addEventListener("click", function(){
+      var val = (exact && exact.value.trim()) ? ("$"+exact.value.replace(/[^0-9]/g,"")) : range;
+      setSummary(card, val + "/mo"); advance(card);
+    });
+  });
+
+  // ----- TEXT / RECORD (Q6) -----
+  cards.filter(function(c){ return c.dataset.type==="text"; }).forEach(function(card){
+    var free = card.querySelector("[data-free]");
+    var mic = card.querySelector("[data-mic]");
+    var status = card.querySelector("[data-recstatus]");
+    var recording = false, t0, timer;
+    free.addEventListener("input", function(){ if(free.value.trim()) setSummary(card, "note added"); else if(!card.dataset.voice) setSummary(card, ""); });
+    mic.addEventListener("click", function(){
+      // Prototype: real build wires MediaRecorder -> Whisper, then shows the transcript to confirm.
+      recording = !recording;
+      if(recording){ mic.classList.add("recording"); t0 = Date.now();
+        timer = setInterval(function(){ var s = Math.floor((Date.now()-t0)/1000);
+          status.innerHTML = '<span class="dot">●</span> Recording  ' + Math.floor(s/60)+":"+("0"+(s%60)).slice(-2); }, 250);
+      } else { mic.classList.remove("recording"); clearInterval(timer);
+        var s = Math.floor((Date.now()-t0)/1000);
+        status.innerHTML = 'Voice note saved (' + Math.floor(s/60)+":"+("0"+(s%60)).slice(-2) + ') · we\u2019ll transcribe it and show it back.';
+        card.dataset.voice = "1"; setSummary(card, "voice note");
+      }
+    });
+  });
+
+  // ----- CTA -----
+  cta.addEventListener("click", function(){
+    if(cta.classList.contains("approved")) return;
+    cta.classList.remove("dim"); cta.classList.add("approved");
+    cta.textContent = "Building your growth plan ✓";
+  });
+
+  refreshCount();
+})();
+</script>
+</body>
+</html>
